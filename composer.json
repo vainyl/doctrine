@@ -1,0 +1,37 @@
+{
+    "name": "vainyl/phalcon-bridge",
+    "type": "shared-package",
+    "authors": [
+        {
+            "name": "Taras Girnyk",
+            "email": "taras.p.gyrnik@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Vainyl\\Phalcon\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.0",
+        "ext-phalcon": "^3.1",
+        "vainyl/config": "0.1.x-dev",
+        "vainyl/core": "0.1.x-dev",
+        "vainyl/database": "0.1.x-dev",
+        "vainyl/di": "0.1.x-dev",
+        "vainyl/event": "0.1.x-dev",
+        "vainyl/http": "0.1.x-dev",
+        "vainyl/time": "0.1.x-dev"
+    },
+    "require-dev": {
+        "phalcon/devtools": "^3.1"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://satis.vainyl.com:444"
+        }
+    ],
+    "prefer-stable": true,
+    "minimum-stability": "dev"
+}
