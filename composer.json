@@ -1,5 +1,5 @@
 {
-    "name": "vainyl/phalcon-bridge",
+    "name": "vainyl/doctrine-orm-bridge",
     "type": "shared-package",
     "authors": [
         {
@@ -9,22 +9,15 @@
     ],
     "autoload": {
         "psr-4": {
-            "Vainyl\\Phalcon\\": "src/"
+            "Vainyl\\Doctrine\\": "src/"
         }
     },
     "require": {
         "php": ">=7.0",
         "ext-phalcon": "^3.1",
-        "vainyl/config": "0.1.x-dev",
         "vainyl/core": "0.1.x-dev",
         "vainyl/database": "0.1.x-dev",
-        "vainyl/di": "0.1.x-dev",
-        "vainyl/event": "0.1.x-dev",
-        "vainyl/http": "0.1.x-dev",
         "vainyl/time": "0.1.x-dev"
-    },
-    "require-dev": {
-        "phalcon/devtools": "^3.1"
     },
     "repositories": [
         {
