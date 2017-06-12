@@ -1,0 +1,6 @@
+services:
+  entity.hydrator.doctrine:
+    class: Vainyl\Doctrine\ORM\Entity\Hydrator\DoctrineEntityHydrator
+  entity.operation.factory.doctrine:
+    class: Vainyl\Doctrine\ORM\Entity\Operation\Factory\DoctrineEntityOperationFactory
+    arguments: ['@operation.factory', '@entity.manager.doctrine']

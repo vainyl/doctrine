@@ -9,13 +9,16 @@
     ],
     "autoload": {
         "psr-4": {
-            "Vainyl\\Doctrine\\ORM": "src/"
+            "Vainyl\\Doctrine\\ORM\\": "src/"
         }
     },
     "require": {
-        "php": ">=7.1",
+        "doctrine/orm": "^2",
+        "opensoft/doctrine-postgres-types" : "^1.3",
         "vainyl/core": "0.1.x-dev",
         "vainyl/database": "0.1.x-dev",
+        "vainyl/entity": "0.1.x-dev",
+        "vainyl/redis": "0.1.x-dev",
         "vainyl/time": "0.1.x-dev"
     },
     "repositories": [
