@@ -10,17 +10,17 @@
  */
 declare(strict_types=1);
 
-namespace Vainyl\Doctrine\ORM\Connection;
+namespace Vainyl\Doctrine\ORM;
 
-use Doctrine\DBAL\Driver\AbstractPostgreSQLDriver;
+use Doctrine\DBAL\Driver\AbstractMySQLDriver;
 use Vainyl\Connection\ConnectionInterface;
 
 /**
- * Class DoctrinePostgresqlConnection
+ * Class DoctrineMysqlConnection
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrinePostgresqlConnection extends AbstractPostgreSQLDriver implements ConnectionInterface
+class DoctrineMysqlConnection extends AbstractMySQLDriver implements ConnectionInterface
 {
     private $connection;
 
@@ -55,7 +55,7 @@ class DoctrinePostgresqlConnection extends AbstractPostgreSQLDriver implements C
      */
     public function getName() : string
     {
-        return 'pdo_pgsql';
+        return 'pdo_mysql';
     }
 
     /**

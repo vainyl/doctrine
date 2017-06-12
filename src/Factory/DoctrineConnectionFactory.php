@@ -10,11 +10,12 @@
  */
 declare(strict_types=1);
 
-namespace Vainyl\Doctrine\ORM\Connection\Factory;
+namespace Vainyl\Doctrine\ORM\Factory;
 
 use Vainyl\Connection\ConnectionInterface;
 use Vainyl\Core\AbstractIdentifiable;
-use Vainyl\Doctrine\ORM\Connection\DoctrinePostgresqlConnection;
+use Vainyl\Doctrine\ORM\DoctrineMysqlConnection;
+use Vainyl\Doctrine\ORM\DoctrinePostgresqlConnection;
 use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineDriverTypeException;
 
 /**
@@ -55,7 +56,7 @@ class DoctrineConnectionFactory extends AbstractIdentifiable
                 return new DoctrinePostgresqlConnection($this->connection);
                 break;
             case 'mysql':
-                return new DoctrinePostgresqlConnection($this->connection);
+                return new DoctrineMysqlConnection($this->connection);
                 break;
             default:
                 throw new UnknownDoctrineDriverTypeException($this, $type);

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Exception;
 
 use Vainyl\Core\Exception\AbstractCoreException;
-use Vainyl\Doctrine\ORM\Connection\Factory\DoctrineConnectionFactory;
+use Vainyl\Doctrine\ORM\Factory\DoctrineConnectionFactory;
 
 /**
  * Class UnknownDoctrineDriverTypeException
