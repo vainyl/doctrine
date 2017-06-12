@@ -11,3 +11,6 @@ services:
 #  doctrine.cache.redis:
 #    class: Vainyl\Doctrine\ORM\Cache\Redis\DoctrineRedisCache
 #    arguments: ['@redis.database']
+#  doctrine.connection.factory:
+#    class: Vainyl\Doctrine\ORM\Connection\Factory\DoctrineConnectionFactory
+#    arguments: ['@connection'];
