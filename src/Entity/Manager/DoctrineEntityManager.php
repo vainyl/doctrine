@@ -1,14 +1,14 @@
 <?php
 /**
- * Vain Framework
+ * Vainyl
  *
  * PHP Version 7
  *
- * @package   vain-doctrine
+ * @package   Doctrine-orm-bridge
  * @license   https://opensource.org/licenses/MIT MIT License
- * @link      https://github.com/allflame/vain-doctrine
+ * @link      https://vainyl.com
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Entity\Manager;
 

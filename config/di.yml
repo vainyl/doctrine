@@ -15,3 +15,6 @@ services:
 #  doctrine.connection.factory:
 #    class: Vainyl\Doctrine\ORM\Factory\DoctrineConnectionFactory
 #    arguments: ['@connection'];
+  doctrine.event.manager:
+    class: Vainyl\Doctrine\ORM\DoctrineEventManager
+    arguments: ['@time.factory']
