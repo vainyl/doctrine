@@ -4,3 +4,10 @@ services:
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Entity\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@operation.factory', '@entity.manager.doctrine']
+  doctrine.cache.apcu:
+    class: Vainyl\Doctrine\ORM\Cache\Apcu\DoctrineApcuCache
+  doctrine.cache.memory:
+    class: Doctrine\Common\Cache\ArrayCache
+#  doctrine.cache.redis:
+#    class: Vainyl\Doctrine\ORM\Cache\Redis\DoctrineRedisCache
+#    arguments: ['@redis.database']
