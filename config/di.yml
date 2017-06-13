@@ -35,3 +35,4 @@ services:
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@operation.factory', '@doctrine.entity.manager']
+  entity.operation.factory: '@entity.operation.factory.doctrine'
