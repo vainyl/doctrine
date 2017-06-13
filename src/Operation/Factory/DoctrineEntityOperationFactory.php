@@ -20,7 +20,7 @@ use Vainyl\Doctrine\ORM\Operation\UpdateDoctrineEntityOperation;
 use Vainyl\Doctrine\ORM\Operation\UpsertDoctrineEntityOperation;
 use Vainyl\Entity\EntityInterface;
 use Vainyl\Entity\Operation\Factory\EntityOperationFactoryInterface;
-use Vainyl\Operation\Collection\Factory\OperationFactoryInterface;
+use Vainyl\Operation\Factory\OperationFactoryInterface;
 use Vainyl\Operation\OperationInterface;
 
 /**

@@ -10,9 +10,8 @@ services:
     class: Doctrine\ORM\Configuration
     factory: ['@doctrine.configuration.factory.orm', 'getConfiguration']
     arguments:
-      - '@doctrine.cache'
+      - '@doctrine.cache.apcu'
       - '@app.environment'
-      - '%doctrine.proxy.name%'
       - '%doctrine.entity.map.file%'
       - '%doctrine.entity.map.extension%'
   doctrine.configuration.factory.orm:
@@ -34,5 +33,5 @@ services:
     class: Vainyl\Doctrine\ORM\Operation\Decorator\DoctrineCollectionFactoryDecorator
     arguments: ['@collection.factory.sequence.entity.inner', '@doctrine.entity.manager']
   entity.operation.factory.doctrine:
-    class: Vainyl\Doctrine\ORM\Entity\Operation\Factory\DoctrineEntityOperationFactory
-    arguments: ['@operation.factory', '@entity.manager.doctrine']
+    class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
+    arguments: ['@operation.factory', '@doctrine.entity.manager']
