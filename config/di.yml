@@ -28,11 +28,11 @@ services:
       - '@time.factory'
   doctrine.entity.manager.factory:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityManagerFactory
-  operation.sequence.factory.entity:
-    decorates: operation.sequence.factory
+  collection.factory.sequence.entity:
+    decorates: collection.factory.sequence
     decoration_priority: 600
     class: Vainyl\Doctrine\ORM\Operation\Decorator\DoctrineCollectionFactoryDecorator
-    arguments: ['@operation.sequence.factory.entity.inner', '@doctrine.entity.manager']
+    arguments: ['@collection.factory.sequence.entity.inner', '@doctrine.entity.manager']
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Entity\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@operation.factory', '@entity.manager.doctrine']
