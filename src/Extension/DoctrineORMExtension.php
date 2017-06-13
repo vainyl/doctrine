@@ -42,6 +42,15 @@ class DoctrineORMExtension extends AbstractExtension
             $container->set('database.document', new Alias('database.document.doctrine'));
         }
 
+        if (false === $container->hasDefinition('entity.operation.factory')) {
+            throw new MissingRequiredServiceException($container, 'entity.operation.factory');
+        }
+
+        $definition = $container->getDefinition('entity.operation.factory.doctrine');
+        if ($definition->isSynthetic()) {
+            $container->set('entity.operation.factory', new Alias('entity.operation.factory.doctrine'));
+        }
+
         return parent::load($configs, $container, $environment);
     }
 }
