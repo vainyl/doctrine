@@ -35,6 +35,7 @@ class DoctrineDatabaseCompilerPass implements CompilerPassInterface
 
         $definition = $container->getDefinition('database.entity');
         if ($definition->isSynthetic()) {
+            $container->removeDefinition('database.entity');
             $container->setAlias('database.entity', new Alias('database.entity.doctrine'));
         }
 

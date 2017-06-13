@@ -33,8 +33,9 @@ class DoctrineFactoryCompilerPass implements CompilerPassInterface
             throw new MissingRequiredServiceException($container, 'entity.operation.factory');
         }
 
-        $definition = $container->getDefinition('entity.operation.factory.doctrine');
+        $definition = $container->getDefinition('entity.operation.factory');
         if ($definition->isSynthetic()) {
+            $container->removeDefinition('entity.operation.factory');
             $container->setAlias('entity.operation.factory', new Alias('entity.operation.factory.doctrine'));
         }
 
