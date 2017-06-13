@@ -21,7 +21,7 @@ services:
     class: Vainyl\Doctrine\ORM\Entity\DoctrineEntityManager
     factory: ['@doctrine.entity.manager.factory', 'create']
     arguments:
-      - '@database.doctrine'
+      - '@database.mvcc'
       - '@doctrine.configuration.orm'
       - '@doctrine.event.manager'
       - '@time.factory'
