@@ -10,7 +10,7 @@
  */
 declare(strict_types=1);
 
-namespace Vainyl\Doctrine\ORM\Entity\Manager;
+namespace Vainyl\Doctrine\ORM\Entity;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;

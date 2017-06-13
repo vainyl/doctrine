@@ -1,20 +1,38 @@
+parameters:
+  doctrine.entity.map.file: 'entitymap'
+  doctrine.entity.map.extension: '.orm.yml'
+
 services:
-  entity.hydrator.doctrine:
-    class: Vainyl\Doctrine\ORM\Entity\Hydrator\DoctrineEntityHydrator
-    arguments: ['@entity.manager.doctrine']
+#  entity.hydrator.doctrine:
+#    class: Vainyl\Doctrine\ORM\Entity\Hydrator\DoctrineEntityHydrator
+#    arguments: ['@entity.manager.doctrine']
+  doctrine.configuration.orm:
+    class: Doctrine\ORM\Configuration
+    factory: ['@doctrine.configuration.factory.orm', 'getConfiguration']
+    arguments:
+      - '@doctrine.cache'
+      - '@app.environment'
+      - '%doctrine.proxy.name%'
+      - '%doctrine.entity.map.file%'
+      - '%doctrine.entity.map.extension%'
+  doctrine.configuration.factory.orm:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineConfigurationFactory
+    arguments: ['@extension.storage']
+  doctrine.entity.manager:
+    class: Vainyl\Doctrine\ORM\Entity\DoctrineEntityManager
+    factory: ['@doctrine.entity.manager.factory', 'create']
+    arguments:
+      - '@database.doctrine'
+      - '@doctrine.configuration.orm'
+      - '@doctrine.event.manager'
+      - '@time.factory'
+  doctrine.entity.manager.factory:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityManagerFactory
+  operation.sequence.factory.entity:
+    decorates: operation.sequence.factory
+    decoration_priority: 600
+    class: Vainyl\Doctrine\ORM\Operation\Decorator\DoctrineCollectionFactoryDecorator
+    arguments: ['@operation.sequence.factory.entity.inner', '@doctrine.entity.manager']
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Entity\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@operation.factory', '@entity.manager.doctrine']
-  doctrine.cache.apcu:
-    class: Vainyl\Doctrine\ORM\Cache\Apcu\DoctrineApcuCache
-  doctrine.cache.memory:
-    class: Doctrine\Common\Cache\ArrayCache
-#  doctrine.cache.redis:
-#    class: Vainyl\Doctrine\ORM\Cache\Redis\DoctrineRedisCache
-#    arguments: ['@redis.database']
-#  doctrine.connection.factory:
-#    class: Vainyl\Doctrine\ORM\Factory\DoctrineConnectionFactory
-#    arguments: ['@connection'];
-  doctrine.event.manager:
-    class: Vainyl\Doctrine\ORM\DoctrineEventManager
-    arguments: ['@time.factory']

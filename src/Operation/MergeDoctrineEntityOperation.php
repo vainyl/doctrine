@@ -10,26 +10,27 @@
  */
 declare(strict_types=1);
 
-namespace Vainyl\Doctrine\ORM\Entity\Operation;
+namespace Vainyl\Doctrine\ORM\Operation;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Vainyl\Core\ResultInterface;
 use Vainyl\Entity\EntityInterface;
 use Vainyl\Operation\AbstractOperation;
+use Vainyl\Operation\SuccessfulOperationResult;
 
 /**
- * Class UpsertDoctrineEntityOperation
+ * Class MergeDoctrineEntityOperation
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class UpsertDoctrineEntityOperation extends AbstractOperation
+class MergeDoctrineEntityOperation extends AbstractOperation
 {
     private $entityManager;
 
     private $entity;
 
     /**
-     * UpsertDoctrineEntityOperation constructor.
+     * MergeDoctrineEntityOperation constructor.
      *
      * @param EntityManagerInterface $entityManager
      * @param EntityInterface        $entity
@@ -45,6 +46,8 @@ class UpsertDoctrineEntityOperation extends AbstractOperation
      */
     public function execute(): ResultInterface
     {
-        trigger_error('Method execute is not implemented', E_USER_ERROR);
+        $this->entityManager->merge($this->entity);
+
+        return new SuccessfulOperationResult($this);
     }
 }

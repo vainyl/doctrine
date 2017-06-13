@@ -10,14 +10,14 @@
  */
 declare(strict_types=1);
 
-namespace Vainyl\Doctrine\ORM\Entity\Operation\Factory;
+namespace Vainyl\Doctrine\ORM\Operation\Factory;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Vainyl\Core\AbstractIdentifiable;
-use Vainyl\Doctrine\ORM\Entity\Operation\CreateDoctrineEntityOperation;
-use Vainyl\Doctrine\ORM\Entity\Operation\DeleteDoctrineEntityOperation;
-use Vainyl\Doctrine\ORM\Entity\Operation\UpdateDoctrineEntityOperation;
-use Vainyl\Doctrine\ORM\Entity\Operation\UpsertDoctrineEntityOperation;
+use Vainyl\Doctrine\ORM\Operation\CreateDoctrineEntityOperation;
+use Vainyl\Doctrine\ORM\Operation\DeleteDoctrineEntityOperation;
+use Vainyl\Doctrine\ORM\Operation\UpdateDoctrineEntityOperation;
+use Vainyl\Doctrine\ORM\Operation\UpsertDoctrineEntityOperation;
 use Vainyl\Entity\EntityInterface;
 use Vainyl\Entity\Operation\Factory\EntityOperationFactoryInterface;
 use Vainyl\Operation\Collection\Factory\OperationFactoryInterface;

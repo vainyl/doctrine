@@ -10,7 +10,7 @@
  */
 declare(strict_types=1);
 
-namespace Vainyl\Doctrine\ORM\Entity\Operation;
+namespace Vainyl\Doctrine\ORM\Operation;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Vainyl\Core\ResultInterface;
@@ -19,18 +19,18 @@ use Vainyl\Operation\AbstractOperation;
 use Vainyl\Operation\SuccessfulOperationResult;
 
 /**
- * Class MergeDoctrineEntityOperation
+ * Class DeleteDoctrineEntityOperation
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class MergeDoctrineEntityOperation extends AbstractOperation
+class DeleteDoctrineEntityOperation extends AbstractOperation
 {
     private $entityManager;
 
     private $entity;
 
     /**
-     * MergeDoctrineEntityOperation constructor.
+     * DeleteDoctrineEntityOperation constructor.
      *
      * @param EntityManagerInterface $entityManager
      * @param EntityInterface        $entity
@@ -46,7 +46,7 @@ class MergeDoctrineEntityOperation extends AbstractOperation
      */
     public function execute(): ResultInterface
     {
-        $this->entityManager->merge($this->entity);
+        $this->entityManager->remove($this->entity);
 
         return new SuccessfulOperationResult($this);
     }

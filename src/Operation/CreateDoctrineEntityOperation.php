@@ -10,7 +10,7 @@
  */
 declare(strict_types=1);
 
-namespace Vainyl\Doctrine\ORM\Entity\Operation;
+namespace Vainyl\Doctrine\ORM\Operation;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Vainyl\Core\ResultInterface;
@@ -19,33 +19,26 @@ use Vainyl\Operation\AbstractOperation;
 use Vainyl\Operation\SuccessfulOperationResult;
 
 /**
- * Class UpdateDoctrineEntityOperation
+ * Class CreateDoctrineEntityOperation
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class UpdateDoctrineEntityOperation extends AbstractOperation
+class CreateDoctrineEntityOperation extends AbstractOperation
 {
     private $entityManager;
 
-    private $newEntity;
-
-    private $oldEntity;
+    private $entity;
 
     /**
-     * UpdateDoctrineEntityOperation constructor.
+     * CreateDoctrineEntityOperation constructor.
      *
      * @param EntityManagerInterface $entityManager
-     * @param EntityInterface        $newEntity
-     * @param EntityInterface        $oldEntity
+     * @param EntityInterface        $entity
      */
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        EntityInterface $newEntity,
-        EntityInterface $oldEntity
-    ) {
+    public function __construct(EntityManagerInterface $entityManager, EntityInterface $entity)
+    {
         $this->entityManager = $entityManager;
-        $this->newEntity = $newEntity;
-        $this->oldEntity = $oldEntity;
+        $this->entity = $entity;
     }
 
     /**
@@ -53,6 +46,8 @@ class UpdateDoctrineEntityOperation extends AbstractOperation
      */
     public function execute(): ResultInterface
     {
+        $this->entityManager->persist($this->entity);
+
         return new SuccessfulOperationResult($this);
     }
 }
