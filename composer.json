@@ -15,7 +15,8 @@
     "require": {
         "doctrine/orm": "^2",
         "vainyl/doctrine-common-bridge": "0.1.x-dev",
-        "vainyl/entity": "0.1.x-dev"
+        "vainyl/entity": "0.1.x-dev",
+        "vainyl/pdo": "0.1.x-dev"
     },
     "repositories": [
         {
