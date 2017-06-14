@@ -42,7 +42,6 @@ class DoctrineConfigurationFactory
     /**
      * @param DoctrineCacheInterface $doctrineCache
      * @param EnvironmentInterface   $environment
-     * @param string                 $doctrineProxy
      * @param string                 $globalFileName
      * @param string                 $extension
      *
@@ -51,7 +50,6 @@ class DoctrineConfigurationFactory
     public function getConfiguration(
         DoctrineCacheInterface $doctrineCache,
         EnvironmentInterface $environment,
-        string $doctrineProxy,
         string $globalFileName,
         string $extension
     ): Configuration {
@@ -73,7 +71,7 @@ class DoctrineConfigurationFactory
             $doctrineCache
         );
         $config->setProxyDir($environment->getCacheDirectory());
-        $config->setProxyNamespace($doctrineProxy);
+        $config->setProxyNamespace('Proxies');
         $config->setMetadataDriverImpl($driver);
 
         return $config;

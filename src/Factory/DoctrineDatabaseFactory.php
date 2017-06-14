@@ -15,7 +15,7 @@ namespace Vainyl\Doctrine\ORM\Factory;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
 use Vainyl\Core\Storage\StorageInterface;
-use Vainyl\Doctrine\Common\Database\DoctrineDatabase;
+use Vainyl\Doctrine\ORM\Database\DoctrineDatabase;
 
 /**
  * Class DoctrineDatabaseFactory
