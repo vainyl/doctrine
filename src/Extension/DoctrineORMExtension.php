@@ -21,4 +21,11 @@ use Vainyl\Core\Extension\AbstractExtension;
  */
 class DoctrineORMExtension extends AbstractExtension
 {
+    /**
+     * @inheritDoc
+     */
+    public function getCompilerPasses(): array
+    {
+        return [];
+    }
 }
