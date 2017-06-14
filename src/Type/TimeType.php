@@ -15,6 +15,7 @@ namespace Vainyl\Doctrine\ORM\Type;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
+use Vainyl\Time\Factory\TimeFactoryInterface;
 use Vainyl\Time\TimeInterface;
 
 /**
@@ -24,6 +25,19 @@ use Vainyl\Time\TimeInterface;
  */
 class TimeType extends Type
 {
+
+    private $timeFactory;
+
+    /**
+     * TimeType constructor.
+     *
+     * @param TimeFactoryInterface $timeFactory
+     */
+    public function __construct(TimeFactoryInterface $timeFactory)
+    {
+        $this->timeFactory = $timeFactory;
+    }
+
     /**
      * @inheritDoc
      */
@@ -41,7 +55,7 @@ class TimeType extends Type
             return $value;
         }
 
-        $val = $platform->getEventManager()->getTimeFactory()->createFromString($value);
+        $val = $this->timeFactory->createFromString($value);
 
         if (!$val) {
             throw ConversionException::conversionFailedFormat(

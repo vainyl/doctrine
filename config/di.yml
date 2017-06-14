@@ -27,6 +27,12 @@ services:
       - '@time.factory'
   doctrine.entity.manager.factory:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityManagerFactory
+  connection.factory.doctrine.orm:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineConnectionFactory
+    arguments: ['@connection.storage']
+  database.factory.doctrine.orm:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineDatabaseFactory
+    arguments: ['@app.config', '@connection.storage']
   collection.factory.sequence.entity:
     decorates: collection.factory.sequence
     decoration_priority: 600
