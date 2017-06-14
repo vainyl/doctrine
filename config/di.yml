@@ -32,7 +32,7 @@ services:
     arguments: ['@connection.storage']
   database.factory.doctrine.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineDatabaseFactory
-    arguments: ['@app.config', '@connection.storage']
+    arguments: ['@config.database', '@connection.storage']
   collection.factory.sequence.entity:
     decorates: collection.factory.sequence
     decoration_priority: 600
