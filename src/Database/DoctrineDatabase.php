@@ -26,20 +26,25 @@ use Vainyl\Database\MvccDatabaseInterface;
  */
 class DoctrineDatabase extends Connection implements MvccDatabaseInterface
 {
+    private $name;
+
     /**
      * DoctrineDatabase constructor.
      *
+     * @param string        $name
      * @param array         $configData
      * @param Configuration $config
      * @param Driver        $driver
      * @param EventManager  $eventManager
      */
     public function __construct(
+        string $name,
         array $configData,
         Configuration $config,
         Driver $driver,
         EventManager $eventManager
     ) {
+        $this->name = $name;
         parent::__construct($configData, $driver, $config, $eventManager);
     }
 
@@ -56,7 +61,7 @@ class DoctrineDatabase extends Connection implements MvccDatabaseInterface
      */
     public function getName(): string
     {
-        return 'doctrine';
+        return $this->name;
     }
 
     /**

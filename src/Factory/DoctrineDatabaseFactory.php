@@ -47,16 +47,18 @@ class DoctrineDatabaseFactory
 
     /**
      * @param string $name
+     * @param string $connectionName
      * @param array  $configData
      *
      * @return DoctrineDatabase
      */
-    public function createDatabase(string $name, array $configData): DoctrineDatabase
+    public function createDatabase(string $name, string $connectionName, array $configData): DoctrineDatabase
     {
         return new DoctrineDatabase(
+            $name,
             $configData,
             $this->configuration,
-            $this->connectionStorage[$configData['connection']],
+            $this->connectionStorage[$connectionName],
             $this->eventManager
         );
     }
