@@ -24,9 +24,11 @@ use Vainyl\Doctrine\ORM\Database\DoctrineDatabase;
  */
 class DoctrineDatabaseFactory
 {
-    private $config;
-
     private $connectionStorage;
+
+    private $configuration;
+
+    private $eventManager;
 
     /**
      * PdoDatabaseFactory constructor.
@@ -34,32 +36,28 @@ class DoctrineDatabaseFactory
      * @param StorageInterface $connectionStorage
      */
     public function __construct(
-        StorageInterface $config,
-        StorageInterface $connectionStorage
+        StorageInterface $connectionStorage,
+        Configuration $configuration,
+        EventManager $eventManager
     ) {
-        $this->config = $config;
         $this->connectionStorage = $connectionStorage;
+        $this->configuration = $configuration;
+        $this->eventManager = $eventManager;
     }
 
     /**
-     * @param string        $name
-     * @param Configuration $configuration
-     * @param EventManager  $eventManager
+     * @param string $name
+     * @param array  $configData
      *
      * @return DoctrineDatabase
      */
-    public function createDatabase(
-        string $name,
-        Configuration $configuration,
-        EventManager $eventManager
-    ): DoctrineDatabase {
-        $config = $this->config[$name];
-
+    public function createDatabase(string $name, array $configData): DoctrineDatabase
+    {
         return new DoctrineDatabase(
-            $config,
-            $configuration,
-            $this->connectionStorage[$config['connection']],
-            $eventManager
+            $configData,
+            $this->configuration,
+            $this->connectionStorage[$configData['connection']],
+            $this->eventManager
         );
     }
 }
