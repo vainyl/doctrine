@@ -43,26 +43,24 @@ class DoctrineConfigurationFactory
      * @param DoctrineCacheInterface $doctrineCache
      * @param EnvironmentInterface   $environment
      * @param string                 $globalFileName
-     * @param string                 $extension
      *
      * @return Configuration
      */
     public function getConfiguration(
         DoctrineCacheInterface $doctrineCache,
         EnvironmentInterface $environment,
-        string $globalFileName,
-        string $extension
+        string $globalFileName
     ): Configuration {
         $paths = [];
         /**
          * @var AbstractExtension $extension
          */
         foreach ($this->extensionStorage->getIterator() as $extension) {
-            $paths[$extension->getConfigDirectory($environment)] = $extension->getNamespace();
+            $paths[$extension->getConfigDirectory()] = $extension->getNamespace();
         }
         $paths[$environment->getConfigDirectory()] = '';
 
-        $driver = new SimplifiedYamlDriver($paths, $extension);
+        $driver = new SimplifiedYamlDriver($paths, '.orm.yml');
         $driver->setGlobalBasename($globalFileName);
 
         $config = Setup::createConfiguration(

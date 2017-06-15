@@ -1,6 +1,5 @@
 parameters:
   doctrine.entity.map.file: 'entitymap'
-  doctrine.entity.map.extension: '.orm.yml'
 
 services:
 #  entity.hydrator.doctrine:
@@ -13,7 +12,6 @@ services:
       - '@doctrine.cache.apcu'
       - '@app.environment'
       - '%doctrine.entity.map.file%'
-      - '%doctrine.entity.map.extension%'
   doctrine.configuration.factory.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineConfigurationFactory
     arguments: ['@extension.storage']
