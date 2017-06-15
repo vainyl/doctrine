@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Factory;
 
 use Vainyl\Connection\ConnectionInterface;
+use Vainyl\Connection\Factory\ConnectionFactoryInterface;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\Storage\StorageInterface;
 use Vainyl\Doctrine\ORM\Database\DoctrineMysqlConnection;
@@ -25,7 +26,7 @@ use Vainyl\Pdo\PdoConnection;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineConnectionFactory extends AbstractIdentifiable
+class DoctrineConnectionFactory extends AbstractIdentifiable implements ConnectionFactoryInterface
 {
     private $connectionStorage;
 
@@ -52,26 +53,27 @@ class DoctrineConnectionFactory extends AbstractIdentifiable
      */
     public function createConnection(
         string $name,
+        string $engine,
         string $host,
         int $port,
+        string $databaseName,
         string $userName,
         string $password,
         array $options
     ): ConnectionInterface {
-        $type = 'pgsql';
-        switch ($type) {
+        switch ($engine) {
             case 'pgsql':
                 return new DoctrinePostgresqlConnection(
-                    new PdoConnection($name, $host, $port, $userName, $password, $options)
+                    new PdoConnection($name, $host, $engine, $port, $databaseName, $userName, $password, $options)
                 );
                 break;
             case 'mysql':
                 return new DoctrineMysqlConnection(
-                    new PdoConnection($name, $host, $port, $userName, $password, $options)
+                    new PdoConnection($name, $host, $engine, $port, $databaseName, $userName, $password, $options)
                 );
                 break;
             default:
-                throw new UnknownDoctrineDriverTypeException($this, $type);
+                throw new UnknownDoctrineDriverTypeException($this, $engine);
         }
     }
 }
