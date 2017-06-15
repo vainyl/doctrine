@@ -58,7 +58,6 @@ class DoctrineConfigurationFactory
         foreach ($this->extensionStorage->getIterator() as $extension) {
             $paths[$extension->getConfigDirectory()] = $extension->getNamespace();
         }
-        $paths[$environment->getConfigDirectory()] = '';
 
         $driver = new SimplifiedYamlDriver($paths, '.orm.yml');
         $driver->setGlobalBasename($globalFileName);
