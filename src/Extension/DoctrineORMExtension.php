@@ -12,20 +12,13 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Extension;
 
-use Vainyl\Core\Extension\AbstractExtension;
+use Vainyl\Core\Extension\AbstractFrameworkExtension;
 
 /**
  * Class DoctrineORMExtension
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineORMExtension extends AbstractExtension
+class DoctrineORMExtension extends AbstractFrameworkExtension
 {
-    /**
-     * @inheritDoc
-     */
-    public function getCompilerPasses(): array
-    {
-        return [];
-    }
 }
