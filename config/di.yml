@@ -44,3 +44,8 @@ services:
     arguments: ['@database.doctrine.orm']
     tags:
       - {name: 'bootstrapper'}
+  app.bootstrapper.doctrine.orm.proxy:
+    class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineProxyBootstrapper
+    arguments: ['@app.environment']
+    tags:
+      - {name: 'bootstrapper'}

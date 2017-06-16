@@ -68,7 +68,7 @@ class DoctrineConfigurationFactory
             $doctrineCache
         );
         $config->setProxyDir($environment->getCacheDirectory());
-        $config->setProxyNamespace('Proxies');
+        $config->setProxyNamespace('Proxy');
         $config->setMetadataDriverImpl($driver);
 
         return $config;
