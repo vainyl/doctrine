@@ -41,7 +41,7 @@ services:
     arguments: ['@operation.factory', '@doctrine.entity.manager']
   app.bootstrapper.doctrine.orm.type:
     class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineTypeBootstrapper
-    arguments: ['@database.doctrine.orm']
+    arguments: ['@database.doctrine.orm', '@time.factory']
     tags:
       - {name: 'bootstrapper'}
   app.bootstrapper.doctrine.orm.proxy:

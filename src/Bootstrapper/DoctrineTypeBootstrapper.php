@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Bootstrapper;
 
-use Vainyl\Core\AbstractIdentifiable;
-use Vainyl\Core\Application\ApplicationInterface;
 use Doctrine\DBAL\PostgresTypes\InetType;
 use Doctrine\DBAL\PostgresTypes\IntArrayType;
 use Doctrine\DBAL\PostgresTypes\MacAddrType;
@@ -21,12 +19,14 @@ use Doctrine\DBAL\PostgresTypes\TsqueryType;
 use Doctrine\DBAL\PostgresTypes\TsvectorType;
 use Doctrine\DBAL\PostgresTypes\XmlType;
 use Doctrine\DBAL\Types\Type;
+use Vainyl\Core\AbstractIdentifiable;
+use Vainyl\Core\Application\ApplicationInterface;
 use Vainyl\Core\Application\BootstrapperInterface;
 use Vainyl\Doctrine\ORM\Database\DoctrineDatabase;
 use Vainyl\Doctrine\ORM\Type\Int8Type;
 use Vainyl\Doctrine\ORM\Type\TextArrayType;
 use Vainyl\Doctrine\ORM\Type\TimeType;
-
+use Vainyl\Time\Factory\TimeFactoryInterface;
 
 /**
  * Class DoctrineTypeBootstrapper
@@ -35,17 +35,20 @@ use Vainyl\Doctrine\ORM\Type\TimeType;
  */
 class DoctrineTypeBootstrapper extends AbstractIdentifiable implements BootstrapperInterface
 {
-
     private $database;
+
+    private $timeFactory;
 
     /**
      * DoctrineTypeBootstrapper constructor.
      *
-     * @param DoctrineDatabase $database
+     * @param DoctrineDatabase     $database
+     * @param TimeFactoryInterface $timeFactory
      */
-    public function __construct(DoctrineDatabase $database)
+    public function __construct(DoctrineDatabase $database, TimeFactoryInterface $timeFactory)
     {
         $this->database = $database;
+        $this->timeFactory = $timeFactory;
     }
 
     /**
@@ -78,7 +81,8 @@ class DoctrineTypeBootstrapper extends AbstractIdentifiable implements Bootstrap
             $this->database->getDatabasePlatform()->markDoctrineTypeCommented($doctrineType);
         }
 
+        Type::getType('vain_time')->setTimeFactory($this->timeFactory);
+
         return $this;
     }
-
 }
