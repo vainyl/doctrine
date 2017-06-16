@@ -19,7 +19,6 @@ use Vainyl\Core\Storage\StorageInterface;
 use Vainyl\Doctrine\ORM\Database\DoctrineMysqlConnection;
 use Vainyl\Doctrine\ORM\Database\DoctrinePostgresqlConnection;
 use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineDriverTypeException;
-use Vainyl\Pdo\PdoConnection;
 
 /**
  * Class DoctrineConnectionFactory
@@ -61,7 +60,7 @@ class DoctrineConnectionFactory extends AbstractIdentifiable implements Connecti
         string $password,
         array $options
     ): ConnectionInterface {
-        $connection = new PdoConnection($name, $host, $engine, $port, $databaseName, $userName, $password, $options);
+        $connection = $this->connectionStorage['pdo'];
         switch ($engine) {
             case 'pgsql':
                 return new DoctrinePostgresqlConnection($connection);
