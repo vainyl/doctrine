@@ -45,7 +45,7 @@ class DoctrineConnectionFactory extends AbstractIdentifiable implements Connecti
      */
     public function getName(): string
     {
-        return 'doctrine';
+        return 'doctrine.orm';
     }
 
     /**
