@@ -20,11 +20,11 @@ use Vainyl\Database\CursorInterface;
 use Vainyl\Database\MvccDatabaseInterface;
 
 /**
- * Class DoctrineDatabase
+ * Class DoctrineORMDatabase
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineDatabase extends Connection implements MvccDatabaseInterface
+class DoctrineORMDatabase extends Connection implements MvccDatabaseInterface
 {
     private $name;
 

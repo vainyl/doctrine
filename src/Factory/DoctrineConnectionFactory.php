@@ -61,16 +61,13 @@ class DoctrineConnectionFactory extends AbstractIdentifiable implements Connecti
         string $password,
         array $options
     ): ConnectionInterface {
+        $connection = new PdoConnection($name, $host, $engine, $port, $databaseName, $userName, $password, $options);
         switch ($engine) {
             case 'pgsql':
-                return new DoctrinePostgresqlConnection(
-                    new PdoConnection($name, $host, $engine, $port, $databaseName, $userName, $password, $options)
-                );
+                return new DoctrinePostgresqlConnection($connection);
                 break;
             case 'mysql':
-                return new DoctrineMysqlConnection(
-                    new PdoConnection($name, $host, $engine, $port, $databaseName, $userName, $password, $options)
-                );
+                return new DoctrineMysqlConnection($connection);
                 break;
             default:
                 throw new UnknownDoctrineDriverTypeException($this, $engine);

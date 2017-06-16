@@ -14,15 +14,18 @@ namespace Vainyl\Doctrine\ORM\Factory;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
+use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\Storage\StorageInterface;
-use Vainyl\Doctrine\ORM\Database\DoctrineDatabase;
+use Vainyl\Database\DatabaseInterface;
+use Vainyl\Database\Factory\DatabaseFactoryInterface;
+use Vainyl\Doctrine\ORM\Database\DoctrineORMDatabase;
 
 /**
- * Class DoctrineDatabaseFactory
+ * Class DoctrineORMDatabaseFactory
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineDatabaseFactory
+class DoctrineORMDatabaseFactory extends AbstractIdentifiable implements DatabaseFactoryInterface
 {
     private $connectionStorage;
 
@@ -46,17 +49,16 @@ class DoctrineDatabaseFactory
     }
 
     /**
-     * @param string $name
-     * @param string $connectionName
-     * @param array  $configData
-     *
-     * @return DoctrineDatabase
+     * @inheritDoc
      */
-    public function createDatabase(string $name, string $connectionName, array $configData): DoctrineDatabase
-    {
-        return new DoctrineDatabase(
-            $name,
-            $configData,
+    public function createDatabase(
+        string $databaseName,
+        string $connectionName,
+        array $options = []
+    ): DatabaseInterface {
+        return new DoctrineORMDatabase(
+            $databaseName,
+            $options,
             $this->configuration,
             $this->connectionStorage[$connectionName],
             $this->eventManager

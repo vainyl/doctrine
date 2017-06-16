@@ -29,7 +29,7 @@ services:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineConnectionFactory
     arguments: ['@connection.storage']
   database.factory.doctrine.orm:
-    class: Vainyl\Doctrine\ORM\Factory\DoctrineDatabaseFactory
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineORMDatabaseFactory
     arguments: ['@connection.storage', '@doctrine.configuration.orm', '@doctrine.event.manager']
   collection.factory.sequence.entity:
     decorates: collection.factory.sequence
