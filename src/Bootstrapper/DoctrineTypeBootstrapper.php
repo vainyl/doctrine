@@ -22,7 +22,7 @@ use Doctrine\DBAL\Types\Type;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\Application\ApplicationInterface;
 use Vainyl\Core\Application\BootstrapperInterface;
-use Vainyl\Doctrine\ORM\Database\DoctrineDatabase;
+use Vainyl\Doctrine\ORM\Database\DoctrineORMDatabase;
 use Vainyl\Doctrine\ORM\Type\Int8Type;
 use Vainyl\Doctrine\ORM\Type\TextArrayType;
 use Vainyl\Doctrine\ORM\Type\TimeType;
@@ -42,10 +42,10 @@ class DoctrineTypeBootstrapper extends AbstractIdentifiable implements Bootstrap
     /**
      * DoctrineTypeBootstrapper constructor.
      *
-     * @param DoctrineDatabase     $database
+     * @param DoctrineORMDatabase  $database
      * @param TimeFactoryInterface $timeFactory
      */
-    public function __construct(DoctrineDatabase $database, TimeFactoryInterface $timeFactory)
+    public function __construct(DoctrineORMDatabase $database, TimeFactoryInterface $timeFactory)
     {
         $this->database = $database;
         $this->timeFactory = $timeFactory;
