@@ -39,3 +39,8 @@ services:
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@operation.factory', '@doctrine.entity.manager']
+  app.bootstrapper.doctrine.orm.type:
+    class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineTypeBootstrapper
+    arguments: ['@database.doctrine.orm']
+    tags:
+      - {name: 'bootstrapper'}
