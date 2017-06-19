@@ -26,11 +26,11 @@ use Vainyl\Core\Extension\ExtensionStorageInterface;
 use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineConfigTypeException;
 
 /**
- * Class DoctrineConfigurationFactory
+ * Class DoctrineORMConfigurationFactory
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineConfigurationFactory extends AbstractIdentifiable
+class DoctrineORMConfigurationFactory extends AbstractIdentifiable
 {
     private $extensionStorage;
 
@@ -49,7 +49,7 @@ class DoctrineConfigurationFactory extends AbstractIdentifiable
      * @param EnvironmentInterface   $environment
      * @param string                 $driverName
      * @param string                 $globalFileName
-     * @param string                 $extension
+     * @param string                 $fileExtension
      * @param string                 $proxyNamespace
      * @param string                 $tempDir
      *
@@ -62,7 +62,7 @@ class DoctrineConfigurationFactory extends AbstractIdentifiable
         EnvironmentInterface $environment,
         string $driverName,
         string $globalFileName,
-        string $extension,
+        string $fileExtension,
         string $proxyNamespace,
         string $tempDir
     ): Configuration {
@@ -76,10 +76,10 @@ class DoctrineConfigurationFactory extends AbstractIdentifiable
 
         switch ($driverName) {
             case 'yaml':
-                $driver = new SimplifiedYamlDriver($paths, $extension);
+                $driver = new SimplifiedYamlDriver($paths, $fileExtension);
                 break;
             case 'xml':
-                $driver = new XmlDriver($paths, $extension);
+                $driver = new XmlDriver($paths, $fileExtension);
                 break;
             case 'annotation':
                 $driver = new AnnotationDriver(new AnnotationReader(), $paths);

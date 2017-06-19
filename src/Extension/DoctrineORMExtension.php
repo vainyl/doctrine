@@ -24,21 +24,18 @@ use Vainyl\Core\Extension\AbstractFrameworkExtension;
  */
 class DoctrineORMExtension extends AbstractFrameworkExtension
 {
-
-    /**
-     * @inheritDoc
-     */
-    public function getAlias()
-    {
-        return 'doctrine.orm';
-    }
-
     /**
      * @inheritDoc
      */
     public function load(array $configs, ContainerBuilder $container): AbstractExtension
     {
-        $configuration = new DoctrineOrmConfiguration();
+        parent::load($configs, $container);
+
+        if (false === $container->hasDefinition('doctrine.configuration.orm')) {
+            throw new MissingRequiredServiceException($container, 'doctrine.configuration.orm');
+        }
+
+        $configuration = new DoctrineORMConfiguration();
         $ormConfig = $this->processConfiguration($configuration, $configs);
 
         $definition = $container->getDefinition('doctrine.configuration.orm');
@@ -48,6 +45,6 @@ class DoctrineORMExtension extends AbstractFrameworkExtension
         $definition->replaceArgument(5, $ormConfig['orm']['proxy']);
         $definition->replaceArgument(6, $ormConfig['orm']['tmp_dir']);
 
-        return parent::load($configs, $container);
+        return $this;
     }
 }
