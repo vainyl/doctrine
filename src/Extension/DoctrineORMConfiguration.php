@@ -28,20 +28,16 @@ class DoctrineORMConfiguration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('doctrine');
+        $rootNode = $treeBuilder->root('doctrine.orm');
 
         $rootNode
             ->children()
-                ->arrayNode('orm')
-                    ->children()
-                        ->scalarNode('config')->defaultValue('yaml')->end()
-                        ->scalarNode('file')->defaultValue('entitymap')->end()
-                        ->scalarNode('extension')->defaultValue('.orm.yml')->end()
-                        ->scalarNode('proxy')->defaultValue('Proxy')->end()
-                        ->scalarNode('tmp_dir')->defaultValue('doctrine')->end()
-                    ->end()
-            ->end()
-        ;
+                ->scalarNode('config')->defaultValue('yaml')->end()
+                ->scalarNode('file')->defaultValue('entitymap')->end()
+                ->scalarNode('extension')->defaultValue('.orm.yml')->end()
+                ->scalarNode('proxy')->defaultValue('Proxy')->end()
+                ->scalarNode('tmp_dir')->defaultValue('doctrine')->end()
+            ->end();
 
         return $treeBuilder;
     }

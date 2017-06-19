@@ -24,15 +24,20 @@ use Vainyl\Core\Extension\AbstractFrameworkExtension;
  */
 class DoctrineORMExtension extends AbstractFrameworkExtension
 {
+
+    /**
+     * @inheritDoc
+     */
+    public function getAlias()
+    {
+        return 'doctrine.orm';
+    }
+
     /**
      * @inheritDoc
      */
     public function load(array $configs, ContainerBuilder $container): AbstractExtension
     {
-        if (false === $container->hasDefinition('doctrine.configuration.orm')) {
-            throw new MissingRequiredServiceException($container, 'doctrine.configuration.orm');
-        }
-
         $configuration = new DoctrineOrmConfiguration();
         $ormConfig = $this->processConfiguration($configuration, $configs);
 
