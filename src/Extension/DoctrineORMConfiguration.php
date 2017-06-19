@@ -28,7 +28,7 @@ class DoctrineORMConfiguration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('doctrine.orm');
+        $rootNode = $treeBuilder->root('doctrine_orm');
 
         $rootNode
             ->children()
