@@ -17,7 +17,7 @@ use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\Storage\StorageInterface;
 use Vainyl\Doctrine\ORM\Database\DoctrineMysqlConnection;
 use Vainyl\Doctrine\ORM\Database\DoctrinePostgresqlConnection;
-use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineDriverTypeException;
+use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineConnectionTypeException;
 
 /**
  * Class DoctrineORMConnectionFactory
@@ -60,7 +60,7 @@ class DoctrineORMConnectionFactory extends AbstractIdentifiable
                 return new DoctrineMysqlConnection($connection);
                 break;
             default:
-                throw new UnknownDoctrineDriverTypeException($this, $engine);
+                throw new UnknownDoctrineConnectionTypeException($this, $engine);
         }
     }
 }

@@ -20,7 +20,7 @@ use Vainyl\Doctrine\ORM\Factory\DoctrineORMConnectionFactory;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class UnknownDoctrineDriverTypeException extends AbstractCoreException
+class UnknownDoctrineConnectionTypeException extends AbstractCoreException
 {
     private $connectionFactory;
 

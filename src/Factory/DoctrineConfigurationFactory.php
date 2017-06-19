@@ -12,20 +12,25 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Factory;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Cache\Cache as DoctrineCacheInterface;
 use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\Tools\Setup;
+use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\Application\EnvironmentInterface;
 use Vainyl\Core\Extension\AbstractExtension;
 use Vainyl\Core\Extension\ExtensionStorageInterface;
+use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineConfigTypeException;
 
 /**
  * Class DoctrineConfigurationFactory
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineConfigurationFactory
+class DoctrineConfigurationFactory extends AbstractIdentifiable
 {
     private $extensionStorage;
 
@@ -42,14 +47,24 @@ class DoctrineConfigurationFactory
     /**
      * @param DoctrineCacheInterface $doctrineCache
      * @param EnvironmentInterface   $environment
+     * @param string                 $driverName
      * @param string                 $globalFileName
+     * @param string                 $extension
+     * @param string                 $proxyNamespace
+     * @param string                 $tempDir
      *
      * @return Configuration
+     *
+     * @throws UnknownDoctrineConfigTypeException
      */
     public function getConfiguration(
         DoctrineCacheInterface $doctrineCache,
         EnvironmentInterface $environment,
-        string $globalFileName
+        string $driverName,
+        string $globalFileName,
+        string $extension,
+        string $proxyNamespace,
+        string $tempDir
     ): Configuration {
         $paths = [];
         /**
@@ -59,16 +74,27 @@ class DoctrineConfigurationFactory
             $paths[$extension->getConfigDirectory()] = $extension->getNamespace();
         }
 
-        $driver = new SimplifiedYamlDriver($paths, '.orm.yml');
+        switch ($driverName) {
+            case 'yaml':
+                $driver = new SimplifiedYamlDriver($paths, $extension);
+                break;
+            case 'xml':
+                $driver = new XmlDriver($paths, $extension);
+                break;
+            case 'annotation':
+                $driver = new AnnotationDriver(new AnnotationReader(), $paths);
+                break;
+            default:
+                throw new UnknownDoctrineConfigTypeException($this, $driverName);
+        }
         $driver->setGlobalBasename($globalFileName);
-
         $config = Setup::createConfiguration(
             $environment->isDebugEnabled(),
-            null,
+            $environment->getCacheDirectory() . DIRECTORY_SEPARATOR . $tempDir,
             $doctrineCache
         );
         $config->setProxyDir($environment->getCacheDirectory());
-        $config->setProxyNamespace('Proxy');
+        $config->setProxyNamespace($proxyNamespace);
         $config->setMetadataDriverImpl($driver);
 
         return $config;
