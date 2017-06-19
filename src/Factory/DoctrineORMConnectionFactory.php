@@ -13,22 +13,23 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Factory;
 
 use Doctrine\DBAL\Driver;
+use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\Storage\StorageInterface;
 use Vainyl\Doctrine\ORM\Database\DoctrineMysqlConnection;
 use Vainyl\Doctrine\ORM\Database\DoctrinePostgresqlConnection;
 use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineDriverTypeException;
 
 /**
- * Class DoctrineConnectionFactory
+ * Class DoctrineORMConnectionFactory
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineConnectionFactory
+class DoctrineORMConnectionFactory extends AbstractIdentifiable
 {
     private $connectionStorage;
 
     /**
-     * DoctrineConnectionFactory constructor.
+     * DoctrineORMConnectionFactory constructor.
      *
      * @param StorageInterface $connectionStorage
      */

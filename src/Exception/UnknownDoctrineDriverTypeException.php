@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Exception;
 
 use Vainyl\Core\Exception\AbstractCoreException;
-use Vainyl\Doctrine\ORM\Factory\DoctrineConnectionFactory;
+use Vainyl\Doctrine\ORM\Factory\DoctrineORMConnectionFactory;
 
 /**
  * Class UnknownDoctrineDriverTypeException
@@ -29,10 +29,10 @@ class UnknownDoctrineDriverTypeException extends AbstractCoreException
     /**
      * UnknownDoctrineDriverTypeException constructor.
      *
-     * @param DoctrineConnectionFactory $connectionFactory
-     * @param string                    $driver
+     * @param DoctrineORMConnectionFactory $connectionFactory
+     * @param string                       $driver
      */
-    public function __construct(DoctrineConnectionFactory $connectionFactory, string $driver)
+    public function __construct(DoctrineORMConnectionFactory $connectionFactory, string $driver)
     {
         $this->connectionFactory = $connectionFactory;
         $this->driver = $driver;

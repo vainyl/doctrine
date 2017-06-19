@@ -26,7 +26,7 @@ services:
   doctrine.entity.manager.factory:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityManagerFactory
   doctrine.connection.factory:
-    class: Vainyl\Doctrine\ORM\Factory\DoctrineConnectionFactory
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConnectionFactory
     arguments: ['@connection.storage']
   database.factory.doctrine.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMDatabaseFactory

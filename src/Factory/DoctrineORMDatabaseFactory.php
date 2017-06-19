@@ -35,12 +35,12 @@ class DoctrineORMDatabaseFactory extends AbstractIdentifiable implements Databas
     /**
      * DoctrineORMDatabaseFactory constructor.
      *
-     * @param DoctrineConnectionFactory $connectionFactory
-     * @param Configuration             $configuration
-     * @param EventManager              $eventManager
+     * @param DoctrineORMConnectionFactory $connectionFactory
+     * @param Configuration                $configuration
+     * @param EventManager                 $eventManager
      */
     public function __construct(
-        DoctrineConnectionFactory $connectionFactory,
+        DoctrineORMConnectionFactory $connectionFactory,
         Configuration $configuration,
         EventManager $eventManager
     ) {
