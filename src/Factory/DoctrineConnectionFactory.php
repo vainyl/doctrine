@@ -12,9 +12,7 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Factory;
 
-use Vainyl\Connection\ConnectionInterface;
-use Vainyl\Connection\Factory\ConnectionFactoryInterface;
-use Vainyl\Core\AbstractIdentifiable;
+use Doctrine\DBAL\Driver;
 use Vainyl\Core\Storage\StorageInterface;
 use Vainyl\Doctrine\ORM\Database\DoctrineMysqlConnection;
 use Vainyl\Doctrine\ORM\Database\DoctrinePostgresqlConnection;
@@ -25,7 +23,7 @@ use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineDriverTypeException;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineConnectionFactory extends AbstractIdentifiable implements ConnectionFactoryInterface
+class DoctrineConnectionFactory
 {
     private $connectionStorage;
 
@@ -50,17 +48,9 @@ class DoctrineConnectionFactory extends AbstractIdentifiable implements Connecti
     /**
      * @inheritDoc
      */
-    public function createConnection(
-        string $name,
-        string $engine,
-        string $host,
-        int $port,
-        string $databaseName,
-        string $userName,
-        string $password,
-        array $options
-    ): ConnectionInterface {
-        $connection = $this->connectionStorage['pdo'];
+    public function createConnection(string $name, string $engine): Driver
+    {
+        $connection = $this->connectionStorage[$name];
         switch ($engine) {
             case 'pgsql':
                 return new DoctrinePostgresqlConnection($connection);

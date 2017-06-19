@@ -15,7 +15,6 @@ namespace Vainyl\Doctrine\ORM\Factory;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Configuration;
 use Vainyl\Core\AbstractIdentifiable;
-use Vainyl\Core\Storage\StorageInterface;
 use Vainyl\Database\DatabaseInterface;
 use Vainyl\Database\Factory\DatabaseFactoryInterface;
 use Vainyl\Doctrine\ORM\Database\DoctrineORMDatabase;
@@ -27,23 +26,25 @@ use Vainyl\Doctrine\ORM\Database\DoctrineORMDatabase;
  */
 class DoctrineORMDatabaseFactory extends AbstractIdentifiable implements DatabaseFactoryInterface
 {
-    private $connectionStorage;
+    private $connectionFactory;
 
     private $configuration;
 
     private $eventManager;
 
     /**
-     * PdoDatabaseFactory constructor.
+     * DoctrineORMDatabaseFactory constructor.
      *
-     * @param StorageInterface $connectionStorage
+     * @param DoctrineConnectionFactory $connectionFactory
+     * @param Configuration             $configuration
+     * @param EventManager              $eventManager
      */
     public function __construct(
-        StorageInterface $connectionStorage,
+        DoctrineConnectionFactory $connectionFactory,
         Configuration $configuration,
         EventManager $eventManager
     ) {
-        $this->connectionStorage = $connectionStorage;
+        $this->connectionFactory = $connectionFactory;
         $this->configuration = $configuration;
         $this->eventManager = $eventManager;
     }
@@ -60,7 +61,7 @@ class DoctrineORMDatabaseFactory extends AbstractIdentifiable implements Databas
             $databaseName,
             $options,
             $this->configuration,
-            $this->connectionStorage[$connectionName],
+            $this->connectionFactory->createConnection($connectionName, $options['engine']),
             $this->eventManager
         );
     }
