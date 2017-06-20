@@ -97,7 +97,7 @@ class DoctrineORMDatabase extends Connection implements MvccDatabaseInterface
     /**
      * @inheritDoc
      */
-    public function runQuery($query, array $bindParams, array $bindTypeParams = []): CursorInterface
+    public function runQuery($query, array $bindParams = [], array $bindTypeParams = []): CursorInterface
     {
         return new DoctrineCursor($this->query($query, $bindParams));
     }
