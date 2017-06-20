@@ -38,6 +38,13 @@ class DoctrineFailedResult extends AbstractFailedResult
      */
     public function toArray(): array
     {
-        return array_merge(['exception' => $this->exception], parent::toArray());
+        return array_merge(
+            [
+                'code' => $this->exception->getCode(),
+                'message' => $this->exception->getMessage(),
+                'trace' => $this->exception->getTrace(),
+            ],
+            parent::toArray()
+        );
     }
 }
