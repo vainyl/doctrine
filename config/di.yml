@@ -11,8 +11,8 @@ services:
       - 'yaml'
       - 'entitymap'
       - '.orm.yml'
-      - 'Proxy'
       - 'doctrine'
+      - 'Proxy'
   doctrine.configuration.factory.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory
     arguments: ['@extension.storage']
