@@ -39,11 +39,11 @@ class DoctrineORMExtension extends AbstractFrameworkExtension
         $ormConfig = $this->processConfiguration($configuration, $configs);
 
         $definition = $container->getDefinition('doctrine.configuration.orm');
-        $definition->replaceArgument(2, $ormConfig['orm']['config']);
-        $definition->replaceArgument(3, $ormConfig['orm']['file']);
-        $definition->replaceArgument(4, $ormConfig['orm']['extension']);
-        $definition->replaceArgument(5, $ormConfig['orm']['tmp_dir']);
-        $definition->replaceArgument(6, $ormConfig['orm']['proxy']);
+        $definition->replaceArgument(2, $ormConfig['config']);
+        $definition->replaceArgument(3, $ormConfig['file']);
+        $definition->replaceArgument(4, $ormConfig['extension']);
+        $definition->replaceArgument(5, $ormConfig['tmp_dir']);
+        $definition->replaceArgument(6, $ormConfig['proxy']);
 
         return $this;
     }
