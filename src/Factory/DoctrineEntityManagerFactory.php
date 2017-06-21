@@ -15,7 +15,7 @@ namespace Vainyl\Doctrine\ORM\Factory;
 use Doctrine\Common\EventManager as DoctrineEventManager;
 use Doctrine\DBAL\Driver\Connection as DBALDriverConnection;
 use Doctrine\ORM\Configuration as DoctrineORMConfiguration;
-use Vainyl\Doctrine\ORM\Entity\DoctrineEntityManager;
+use Vainyl\Doctrine\ORM\DoctrineEntityManager;
 use Vainyl\Time\Factory\TimeFactoryInterface;
 
 /**

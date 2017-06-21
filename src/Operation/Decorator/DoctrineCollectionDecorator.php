@@ -15,7 +15,7 @@ namespace Vainyl\Doctrine\ORM\Operation\Decorator;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\ORMException;
 use Vainyl\Core\ResultInterface;
-use Vainyl\Doctrine\ORM\Entity\DoctrineEntityManager;
+use Vainyl\Doctrine\ORM\DoctrineEntityManager;
 use Vainyl\Doctrine\ORM\Operation\DoctrineFailedResult;
 use Vainyl\Operation\Collection\CollectionInterface;
 use Vainyl\Operation\Collection\Decorator\AbstractCollectionDecorator;

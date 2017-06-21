@@ -14,7 +14,7 @@ services:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory
     arguments: ['@extension.storage']
   doctrine.entity.manager:
-    class: Vainyl\Doctrine\ORM\Entity\DoctrineEntityManager
+    class: Vainyl\Doctrine\ORM\DoctrineEntityManager
     factory: ['@doctrine.entity.manager.factory', 'create']
     arguments:
       - '@database.doctrine.orm'

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Operation\Decorator;
 
-use Vainyl\Doctrine\ORM\Entity\DoctrineEntityManager;
+use Vainyl\Doctrine\ORM\DoctrineEntityManager;
 use Vainyl\Operation\Collection\CollectionInterface;
 use Vainyl\Operation\Collection\Decorator\AbstractCollectionFactoryDecorator;
 use Vainyl\Operation\Collection\Factory\CollectionFactoryInterface;
