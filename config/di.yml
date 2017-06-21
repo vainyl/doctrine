@@ -48,5 +48,5 @@ services:
     tags:
       - {name: 'bootstrapper'}
   entity.hydrator.doctrine:
-    class: Vainyl\Doctrine\ORM\Entity\Hydrator\DoctrineEntityHydrator
-    arguments: ['@entity.manager.doctrine']
+    class: Vainyl\Doctrine\ORM\Entity\DoctrineEntityHydrator
+    arguments: ['@doctrine.entity.manager']
