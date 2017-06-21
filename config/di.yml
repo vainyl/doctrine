@@ -1,7 +1,4 @@
 services:
-#  entity.hydrator.doctrine:
-#    class: Vainyl\Doctrine\ORM\Entity\Hydrator\DoctrineEntityHydrator
-#    arguments: ['@entity.manager.doctrine']
   doctrine.configuration.orm:
     class: Doctrine\ORM\Configuration
     factory: ['@doctrine.configuration.factory.orm', 'getConfiguration']
@@ -50,3 +47,6 @@ services:
     arguments: ['@app.environment']
     tags:
       - {name: 'bootstrapper'}
+  entity.hydrator.doctrine:
+    class: Vainyl\Doctrine\ORM\Entity\Hydrator\DoctrineEntityHydrator
+    arguments: ['@entity.manager.doctrine']
