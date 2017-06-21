@@ -6,7 +6,7 @@ services:
     class: Doctrine\ORM\Configuration
     factory: ['@doctrine.configuration.factory.orm', 'getConfiguration']
     arguments:
-      - '@doctrine.cache.apcu'
+      - '@doctrine.cache'
       - '@app.environment'
       - 'yaml'
       - 'entitymap'
