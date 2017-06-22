@@ -57,10 +57,10 @@ class DoctrineEntityHydrator extends AbstractIdentifiable implements EntityHydra
         EntityInterface $entity,
         ClassMetadataInfo $classMetadata
     ): EntityInterface {
-        foreach ($externalData as $column => $value) {
+        foreach ($externalData as $field => $value) {
             switch (true) {
-                case array_key_exists($column, $classMetadata->fieldNames):
-                    $fieldMapping = $classMetadata->fieldMappings[$column];
+                case array_key_exists($field, $classMetadata->fieldMappings):
+                    $fieldMapping = $classMetadata->fieldMappings[$field];
                     $classMetadata->reflFields[$fieldMapping['fieldName']]
                         ->setValue(
                             $entity,
