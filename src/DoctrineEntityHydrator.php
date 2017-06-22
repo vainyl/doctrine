@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
@@ -62,7 +63,13 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
      */
     public function supports(string $class): bool
     {
-        return $this->metadataFactory->hasMetadataFor($class);
+        try {
+            $this->metadataFactory->getMetadataFor($class);
+        } catch (MappingException $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
