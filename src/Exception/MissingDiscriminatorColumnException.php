@@ -12,15 +12,15 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Exception;
 
-use Vainyl\Core\Exception\AbstractHydratorException;
-use Vainyl\Core\Hydrator\HydratorInterface;
+use Vainyl\Entity\Exception\AbstractEntityFactoryException;
+use Vainyl\Entity\Factory\EntityFactoryInterface;
 
 /**
  * Class MissingDiscriminatorColumnException
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class MissingDiscriminatorColumnException extends AbstractHydratorException
+class MissingDiscriminatorColumnException extends AbstractEntityFactoryException
 {
     private $column;
 
@@ -29,16 +29,16 @@ class MissingDiscriminatorColumnException extends AbstractHydratorException
     /**
      * MissingDiscriminatorColumnException constructor.
      *
-     * @param HydratorInterface $hydrator
-     * @param string            $column
-     * @param array             $externalData
+     * @param EntityFactoryInterface $factory
+     * @param string                 $column
+     * @param array                  $externalData
      */
-    public function __construct(HydratorInterface $hydrator, string $column, array $externalData)
+    public function __construct(EntityFactoryInterface $factory, string $column, array $externalData)
     {
         $this->column = $column;
         $this->externalData = $externalData;
         parent::__construct(
-            $hydrator,
+            $factory,
             sprintf('Column %s not found in external data %s', $column, json_encode($externalData))
         );
     }

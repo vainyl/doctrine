@@ -16,16 +16,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Vainyl\Core\ArrayInterface;
+use Vainyl\Core\ArrayX\Factory\ArrayFactoryInterface;
 use Vainyl\Core\Hydrator\AbstractHydrator;
 use Vainyl\Core\Hydrator\HydratorInterface;
-use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
-use Vainyl\Doctrine\ORM\Exception\MissingIdentifierColumnException;
-use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
-use Vainyl\Doctrine\ORM\Exception\UnknownReferenceEntityException;
 use Vainyl\Entity\EntityInterface;
 
 /**
@@ -39,32 +35,33 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
 
     private $databasePlatform;
 
-    private $entityManager;
+    private $factoryStorage;
 
     /**
      * DoctrineEntityHydrator constructor.
      *
-     * @param ClassMetadataFactory   $metadataFactory
-     * @param AbstractPlatform       $databasePlatform
-     * @param EntityManagerInterface $entityManager
+     * @param ClassMetadataFactory $metadataFactory
+     * @param AbstractPlatform     $databasePlatform
+     * @param \ArrayAccess         $factoryStorage
      */
     public function __construct(
         ClassMetadataFactory $metadataFactory,
         AbstractPlatform $databasePlatform,
-        EntityManagerInterface $entityManager
+        \ArrayAccess $factoryStorage
+
     ) {
         $this->metadataFactory = $metadataFactory;
         $this->databasePlatform = $databasePlatform;
-        $this->entityManager = $entityManager;
+        $this->factoryStorage = $factoryStorage;
     }
 
     /**
      * @inheritDoc
      */
-    public function supports(string $class): bool
+    public function supports(object $object): bool
     {
         try {
-            $this->metadataFactory->getMetadataFor($class);
+            $this->metadataFactory->getMetadataFor(get_class($object));
         } catch (MappingException $e) {
             return false;
         }
@@ -73,51 +70,35 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
     }
 
     /**
-     * @param array             $entityData
-     * @param ClassMetadataInfo $classMetadata
+     * @param string $className
      *
-     * @return EntityInterface
+     * @return ArrayFactoryInterface
      */
-    protected function findReference(array $entityData, ClassMetadataInfo $classMetadata): EntityInterface
+    public function findFactory(string $className): ArrayFactoryInterface
     {
-        $identifier = $classMetadata->identifier[0];
-        if (false === array_key_exists($identifier, $entityData)) {
-            throw new MissingIdentifierColumnException(
-                $this,
-                $classMetadata->identifier[0],
-                $entityData
-            );
-        }
         /**
-         * @var EntityInterface $reference
+         * @var ArrayFactoryInterface $factory
          */
-        if (null === ($reference = $this->entityManager->find(
-                $classMetadata,
-                $entityData[$identifier]
-            ))
-        ) {
-            throw new UnknownReferenceEntityException(
-                $this,
-                $classMetadata->name,
-                $entityData[$identifier]
-            );
+        foreach ($this->factoryStorage as $factory) {
+            if ($factory->supports($className)) {
+                return $factory;
+            }
         }
 
-        return $reference;
+        return null;
     }
 
     /**
-     * @param array             $externalData
-     * @param EntityInterface   $entity
-     * @param ClassMetadataInfo $classMetadata
-     *
-     * @return EntityInterface
+     * @inheritDoc
      */
-    protected function populateEntity(
-        array $externalData,
-        EntityInterface $entity,
-        ClassMetadataInfo $classMetadata
-    ): EntityInterface {
+    public function doHydrate(object $entity, array $externalData): ArrayInterface
+    {
+        /**
+         * @var ClassMetadataInfo $classMetadata
+         * @var EntityInterface   $entity
+         */
+        $classMetadata = $this->metadataFactory->getMetadataFor(get_class($entity));
+
         foreach ($externalData as $field => $value) {
             switch (true) {
                 case array_key_exists($field, $classMetadata->fieldMappings):
@@ -135,24 +116,22 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
                 case array_key_exists($field, $classMetadata->associationMappings):
                     $associationMapping = $classMetadata->associationMappings[$field];
                     $referenceEntity = $associationMapping['targetEntity'];
-                    /**
-                     * @var ClassMetadataInfo $referenceMetadata
-                     */
-                    $referenceMetadata = $this->metadataFactory->getMetadataFor($referenceEntity);
                     switch ($associationMapping['type']) {
                         case ClassMetadataInfo::ONE_TO_ONE:
                         case ClassMetadataInfo::MANY_TO_ONE:
                             $classMetadata->reflFields[$associationMapping['fieldName']]
                                 ->setValue(
                                     $entity,
-                                    $this->findReference($value, $referenceMetadata)
+                                    $this->findFactory($referenceEntity)->create($referenceEntity, $value)
                                 );
+
                             break;
                         case ClassMetadataInfo::ONE_TO_MANY:
                         case ClassMetadataInfo::MANY_TO_MANY:
                             $collection = new ArrayCollection();
+                            $factory = $this->findFactory($referenceEntity);
                             foreach ($value as $referenceData) {
-                                $collection->add($this->findReference($referenceData, $referenceMetadata));
+                                $collection->add($factory->create($referenceEntity . $referenceData));
                             }
                             $classMetadata->reflFields[$associationMapping['fieldName']]
                                 ->setValue(
@@ -166,55 +145,5 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
         }
 
         return $entity;
-    }
-
-    /**
-     * @param array             $entityData
-     * @param ClassMetadataInfo $classMetadata
-     *
-     * @return string
-     */
-    public function getChildEntityName(array $entityData, ClassMetadataInfo $classMetadata): string
-    {
-        if (ClassMetadataInfo::INHERITANCE_TYPE_NONE === $classMetadata->inheritanceType) {
-            return $classMetadata->name;
-        }
-
-        if (false === array_key_exists($classMetadata->discriminatorColumn['name'], $entityData)) {
-            throw new MissingDiscriminatorColumnException(
-                $this,
-                $classMetadata->discriminatorColumn['name'],
-                $entityData
-            );
-        }
-
-        $discriminatorColumnValue = $entityData[$classMetadata->discriminatorColumn['name']];
-        if (false === array_key_exists($discriminatorColumnValue, $classMetadata->discriminatorMap)) {
-            throw new UnknownDiscriminatorValueException(
-                $this,
-                $discriminatorColumnValue,
-                $classMetadata->discriminatorMap
-            );
-        }
-
-        return $classMetadata->discriminatorMap[$discriminatorColumnValue];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function doHydrate(string $entityName, array $externalData): ArrayInterface
-    {
-        /**
-         * @var ClassMetadataInfo $rootClassMetadata
-         * @var ClassMetadataInfo $childClassMetadata
-         * @var EntityInterface   $entity
-         */
-        $rootClassMetadata = $this->metadataFactory->getMetadataFor($entityName);
-        $childEntityName = $this->getChildEntityName($externalData, $rootClassMetadata);
-        $childClassMetadata = $this->metadataFactory->getMetadataFor($childEntityName);
-        $entity = $childClassMetadata->newInstance();
-
-        return $this->populateEntity($externalData, $entity, $childClassMetadata);
     }
 }
