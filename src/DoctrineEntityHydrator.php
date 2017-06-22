@@ -18,20 +18,21 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Vainyl\Core\AbstractIdentifiable;
+use Vainyl\Core\ArrayInterface;
+use Vainyl\Core\Hydrator\AbstractHydrator;
+use Vainyl\Core\Hydrator\HydratorInterface;
 use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
 use Vainyl\Doctrine\ORM\Exception\MissingIdentifierColumnException;
 use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
 use Vainyl\Doctrine\ORM\Exception\UnknownReferenceEntityException;
 use Vainyl\Entity\EntityInterface;
-use Vainyl\Entity\Hydrator\EntityHydratorInterface;
 
 /**
  * Class DoctrineEntityHydrator
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntityHydrator extends AbstractIdentifiable implements EntityHydratorInterface
+class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterface
 {
     private $metadataFactory;
 
@@ -54,6 +55,14 @@ class DoctrineEntityHydrator extends AbstractIdentifiable implements EntityHydra
         $this->metadataFactory = $metadataFactory;
         $this->databasePlatform = $databasePlatform;
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supports(string $class): bool
+    {
+        return $this->metadataFactory->hasMetadataFor($class);
     }
 
     /**
@@ -168,7 +177,7 @@ class DoctrineEntityHydrator extends AbstractIdentifiable implements EntityHydra
     /**
      * @inheritDoc
      */
-    public function hydrate(string $entityName, array $externalData): EntityInterface
+    public function doHydrate(string $entityName, array $externalData): ArrayInterface
     {
         /**
          * @var ClassMetadataInfo $rootClassMetadata

@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Exception;
 
-use Vainyl\Entity\Exception\AbstractHydratorException;
-use Vainyl\Entity\Hydrator\EntityHydratorInterface;
+use Vainyl\Core\Exception\AbstractHydratorException;
+use Vainyl\Core\Hydrator\HydratorInterface;
 
 /**
  * Class UnknownReferenceEntityException
@@ -29,11 +29,11 @@ class UnknownReferenceEntityException extends AbstractHydratorException
     /**
      * UnknownReferenceEntityException constructor.
      *
-     * @param EntityHydratorInterface $hydrator
-     * @param string                  $entityName
-     * @param mixed                   $referenceId
+     * @param HydratorInterface $hydrator
+     * @param string            $entityName
+     * @param mixed             $referenceId
      */
-    public function __construct(EntityHydratorInterface $hydrator, string $entityName, $referenceId)
+    public function __construct(HydratorInterface $hydrator, string $entityName, $referenceId)
     {
         $this->entityName = $entityName;
         $this->referenceId = $referenceId;

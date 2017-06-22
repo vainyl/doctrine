@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Exception;
 
-use Vainyl\Entity\Exception\AbstractHydratorException;
-use Vainyl\Entity\Hydrator\EntityHydratorInterface;
+use Vainyl\Core\Exception\AbstractHydratorException;
+use Vainyl\Core\Hydrator\HydratorInterface;
 
 /**
  * Class UnknownDiscriminatorValueException
@@ -29,11 +29,11 @@ class UnknownDiscriminatorValueException extends AbstractHydratorException
     /**
      * UnknownDiscriminatorValueException constructor.
      *
-     * @param EntityHydratorInterface $hydrator
+     * @param HydratorInterface $hydrator
      * @param string                  $value
      * @param array                   $discriminatorMap
      */
-    public function __construct(EntityHydratorInterface $hydrator, $value, array $discriminatorMap)
+    public function __construct(HydratorInterface $hydrator, $value, array $discriminatorMap)
     {
         $this->value = $value;
         $this->discriminatorMap = $discriminatorMap;

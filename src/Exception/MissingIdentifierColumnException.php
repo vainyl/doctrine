@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Exception;
 
-use Vainyl\Entity\Exception\AbstractHydratorException;
-use Vainyl\Entity\Hydrator\EntityHydratorInterface;
+use Vainyl\Core\Exception\AbstractHydratorException;
+use Vainyl\Core\Hydrator\HydratorInterface;
 
 /**
  * Class MissingIdentifierColumnException
@@ -29,11 +29,11 @@ class MissingIdentifierColumnException extends AbstractHydratorException
     /**
      * MissingIdentifierColumnException constructor.
      *
-     * @param EntityHydratorInterface $hydrator
-     * @param string                  $identifier
-     * @param array                   $externalData
+     * @param HydratorInterface $hydrator
+     * @param string            $identifier
+     * @param array             $externalData
      */
-    public function __construct(EntityHydratorInterface $hydrator, string $identifier, array $externalData)
+    public function __construct(HydratorInterface $hydrator, string $identifier, array $externalData)
     {
         $this->identifier = $identifier;
         $this->externalData = $externalData;
@@ -48,6 +48,9 @@ class MissingIdentifierColumnException extends AbstractHydratorException
      */
     public function toArray(): array
     {
-        return array_merge(['identifier' => $this->identifier, 'external_data' => $this->externalData], parent::toArray());
+        return array_merge(
+            ['identifier' => $this->identifier, 'external_data' => $this->externalData],
+            parent::toArray()
+        );
     }
 }

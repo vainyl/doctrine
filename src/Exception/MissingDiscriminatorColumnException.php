@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Exception;
 
-use Vainyl\Entity\Exception\AbstractHydratorException;
-use Vainyl\Entity\Hydrator\EntityHydratorInterface;
+use Vainyl\Core\Exception\AbstractHydratorException;
+use Vainyl\Core\Hydrator\HydratorInterface;
 
 /**
  * Class MissingDiscriminatorColumnException
@@ -29,11 +29,11 @@ class MissingDiscriminatorColumnException extends AbstractHydratorException
     /**
      * MissingDiscriminatorColumnException constructor.
      *
-     * @param EntityHydratorInterface $hydrator
-     * @param string                  $column
-     * @param array                   $externalData
+     * @param HydratorInterface $hydrator
+     * @param string            $column
+     * @param array             $externalData
      */
-    public function __construct(EntityHydratorInterface $hydrator, string $column, array $externalData)
+    public function __construct(HydratorInterface $hydrator, string $column, array $externalData)
     {
         $this->column = $column;
         $this->externalData = $externalData;
