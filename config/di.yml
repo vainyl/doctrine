@@ -58,4 +58,4 @@ services:
       - {name: 'bootstrapper'}
   entity.hydrator.doctrine:
     class: Vainyl\Doctrine\ORM\DoctrineEntityHydrator
-    arguments: ['@doctrine.entity.metadata.factory', '@doctrine.entity.database.platform']
+    arguments: ['@doctrine.entity.metadata.factory', '@doctrine.entity.database.platform', '@doctrine.entity.manager']

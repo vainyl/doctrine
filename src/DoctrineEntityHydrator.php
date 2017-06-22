@@ -12,13 +12,17 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
+use Vainyl\Doctrine\ORM\Exception\MissingIdentifierColumnException;
 use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
+use Vainyl\Doctrine\ORM\Exception\UnknownReferenceEntityException;
 use Vainyl\Entity\EntityInterface;
 use Vainyl\Entity\Hydrator\EntityHydratorInterface;
 
@@ -33,16 +37,23 @@ class DoctrineEntityHydrator extends AbstractIdentifiable implements EntityHydra
 
     private $databasePlatform;
 
+    private $entityManager;
+
     /**
      * DoctrineEntityHydrator constructor.
      *
-     * @param ClassMetadataFactory $metadataFactory
-     * @param AbstractPlatform     $databasePlatform
+     * @param ClassMetadataFactory   $metadataFactory
+     * @param AbstractPlatform       $databasePlatform
+     * @param EntityManagerInterface $entityManager
      */
-    public function __construct(ClassMetadataFactory $metadataFactory, AbstractPlatform $databasePlatform)
-    {
+    public function __construct(
+        ClassMetadataFactory $metadataFactory,
+        AbstractPlatform $databasePlatform,
+        EntityManagerInterface $entityManager
+    ) {
         $this->metadataFactory = $metadataFactory;
         $this->databasePlatform = $databasePlatform;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -71,6 +82,50 @@ class DoctrineEntityHydrator extends AbstractIdentifiable implements EntityHydra
                                 )
                         );
                     break;
+                case array_key_exists($field, $classMetadata->associationMappings):
+                    $associationMapping = $classMetadata->associationMappings[$field];
+                    $referenceEntity = $associationMapping['targetEntity'];
+                    /**
+                     * @var ClassMetadataInfo $referenceMetadata
+                     */
+                    $referenceMetadata = $this->metadataFactory->getMetadataFor($referenceEntity);
+                    switch ($associationMapping['type']) {
+                        case ClassMetadataInfo::ONE_TO_ONE:
+                        case ClassMetadataInfo::MANY_TO_ONE:
+                            break;
+                        case ClassMetadataInfo::ONE_TO_MANY:
+                        case ClassMetadataInfo::MANY_TO_MANY:
+                            $collection = new ArrayCollection();
+                            foreach ($value as $referenceData) {
+                                $identifier = $referenceMetadata->identifier[0];
+                                if (false === array_key_exists($identifier, $referenceData)) {
+                                    throw new MissingIdentifierColumnException(
+                                        $this,
+                                        $referenceMetadata->identifier[0],
+                                        $referenceData
+                                    );
+                                }
+                                if (null === ($reference = $this->entityManager->find(
+                                        $referenceEntity,
+                                        $referenceData[$identifier]
+                                    ))
+                                ) {
+                                    throw new UnknownReferenceEntityException(
+                                        $this,
+                                        $referenceEntity,
+                                        $referenceData[$identifier]
+                                    );
+                                }
+                                $collection->add($reference);
+                            }
+                            $classMetadata->reflFields[$associationMapping['fieldName']]
+                                ->setValue(
+                                    $entity,
+                                    $collection
+                                );
+
+                            break;
+                    }
             }
         }
 
