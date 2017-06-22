@@ -73,6 +73,40 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
     }
 
     /**
+     * @param array             $entityData
+     * @param ClassMetadataInfo $classMetadata
+     *
+     * @return EntityInterface
+     */
+    protected function findReference(array $entityData, ClassMetadataInfo $classMetadata): EntityInterface
+    {
+        $identifier = $classMetadata->identifier[0];
+        if (false === array_key_exists($identifier, $entityData)) {
+            throw new MissingIdentifierColumnException(
+                $this,
+                $classMetadata->identifier[0],
+                $entityData
+            );
+        }
+        /**
+         * @var EntityInterface $reference
+         */
+        if (null === ($reference = $this->entityManager->find(
+                $classMetadata,
+                $entityData[$identifier]
+            ))
+        ) {
+            throw new UnknownReferenceEntityException(
+                $this,
+                $classMetadata->name,
+                $entityData[$identifier]
+            );
+        }
+
+        return $reference;
+    }
+
+    /**
      * @param array             $externalData
      * @param EntityInterface   $entity
      * @param ClassMetadataInfo $classMetadata
@@ -108,31 +142,17 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
                     switch ($associationMapping['type']) {
                         case ClassMetadataInfo::ONE_TO_ONE:
                         case ClassMetadataInfo::MANY_TO_ONE:
+                            $classMetadata->reflFields[$associationMapping['fieldName']]
+                                ->setValue(
+                                    $entity,
+                                    $this->findReference($value, $referenceMetadata)
+                                );
                             break;
                         case ClassMetadataInfo::ONE_TO_MANY:
                         case ClassMetadataInfo::MANY_TO_MANY:
                             $collection = new ArrayCollection();
                             foreach ($value as $referenceData) {
-                                $identifier = $referenceMetadata->identifier[0];
-                                if (false === array_key_exists($identifier, $referenceData)) {
-                                    throw new MissingIdentifierColumnException(
-                                        $this,
-                                        $referenceMetadata->identifier[0],
-                                        $referenceData
-                                    );
-                                }
-                                if (null === ($reference = $this->entityManager->find(
-                                        $referenceEntity,
-                                        $referenceData[$identifier]
-                                    ))
-                                ) {
-                                    throw new UnknownReferenceEntityException(
-                                        $this,
-                                        $referenceEntity,
-                                        $referenceData[$identifier]
-                                    );
-                                }
-                                $collection->add($reference);
+                                $collection->add($this->findReference($referenceData, $referenceMetadata));
                             }
                             $classMetadata->reflFields[$associationMapping['fieldName']]
                                 ->setValue(
@@ -149,16 +169,15 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
     }
 
     /**
-     * @param string            $entityName
      * @param array             $entityData
      * @param ClassMetadataInfo $classMetadata
      *
      * @return string
      */
-    public function getChildEntityName(string $entityName, array $entityData, ClassMetadataInfo $classMetadata): string
+    public function getChildEntityName(array $entityData, ClassMetadataInfo $classMetadata): string
     {
         if (ClassMetadataInfo::INHERITANCE_TYPE_NONE === $classMetadata->inheritanceType) {
-            return $entityName;
+            return $classMetadata->name;
         }
 
         if (false === array_key_exists($classMetadata->discriminatorColumn['name'], $entityData)) {
@@ -192,7 +211,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
          * @var EntityInterface   $entity
          */
         $rootClassMetadata = $this->metadataFactory->getMetadataFor($entityName);
-        $childEntityName = $this->getChildEntityName($entityName, $externalData, $rootClassMetadata);
+        $childEntityName = $this->getChildEntityName($externalData, $rootClassMetadata);
         $childClassMetadata = $this->metadataFactory->getMetadataFor($childEntityName);
         $entity = $childClassMetadata->newInstance();
 
