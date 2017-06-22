@@ -26,6 +26,15 @@ services:
   doctrine.connection.factory:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConnectionFactory
     arguments: ['@connection.storage']
+  doctrine.entity.metadata.factory:
+    class: Doctrine\ORM\Mapping\ClassMetadataFactory
+    factory: ['@doctrine.entity.manager', 'getMetadataFactory']
+  doctrine.entity.database.connection:
+    class: Doctrine\DBAL\Connection
+    factory: ['@doctrine.entity.manager', 'getConnection']
+  doctrine.entity.database.platform:
+    class: Doctrine\DBAL\Platforms\AbstractPlatform
+    factory: ['@doctrine.entity.database.connection', 'getDatabasePlatform']
   database.factory.doctrine.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMDatabaseFactory
     arguments: ['@doctrine.connection.factory', '@doctrine.configuration.orm', '@doctrine.event.manager']
@@ -49,4 +58,4 @@ services:
       - {name: 'bootstrapper'}
   entity.hydrator.doctrine:
     class: Vainyl\Doctrine\ORM\DoctrineEntityHydrator
-    arguments: ['@doctrine.entity.manager']
+    arguments: ['@doctrine.entity.metadata.factory', '@doctrine.entity.database.platform']
