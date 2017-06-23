@@ -59,10 +59,6 @@ services:
   entity.hydrator.doctrine:
     class: Vainyl\Doctrine\ORM\DoctrineEntityHydrator
     arguments: ['@doctrine.entity.metadata.factory', '@doctrine.entity.database.platform', '@doctrine.registry']
-    tags:
-      - {name: 'hydrator', alias: 'doctrine.entity'}
   entity.factory.doctrine:
     class: Vainyl\Doctrine\ORM\DoctrineEntityFactory
     arguments: ['@entity.hydrator.doctrine', '@doctrine.entity.metadata.factory']
-    tags:
-      - {name: 'array.factory', alias: 'doctrine.entity'}
