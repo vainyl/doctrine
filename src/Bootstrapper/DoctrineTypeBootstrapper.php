@@ -72,7 +72,7 @@ class DoctrineTypeBootstrapper extends AbstractIdentifiable implements Bootstrap
                      'xml'        => ['xml', XmlType::class],
                      'inet'       => ['inet', InetType::class],
                      'macaddr'    => ['macaddr', MacAddrType::class],
-                     'vain_time'  => ['timestamp', TimeType::class],
+                     'v_time'     => ['timestamp', TimeType::class],
                      'int8'       => ['bigint', Int8Type::class],
                  ] as $doctrineType => $typeData) {
             list ($dbType, $className) = $typeData;
@@ -81,7 +81,7 @@ class DoctrineTypeBootstrapper extends AbstractIdentifiable implements Bootstrap
             $this->database->getDatabasePlatform()->markDoctrineTypeCommented($doctrineType);
         }
 
-        Type::getType('vain_time')->setTimeFactory($this->timeFactory);
+        Type::getType('v_time')->setTimeFactory($this->timeFactory);
 
         return $this;
     }
