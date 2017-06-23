@@ -159,7 +159,7 @@ class DoctrineEntityHydrator extends AbstractHydrator
                     }
                     break;
             }
-            if (null === $reflectionField) {
+            if (null !== $reflectionField) {
                 $reflectionField->setValue($entity, $processedValue);
             }
         }
