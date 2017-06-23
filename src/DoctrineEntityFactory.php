@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM;
 
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Vainyl\Core\ArrayInterface;
@@ -49,6 +50,12 @@ class DoctrineEntityFactory extends AbstractArrayFactory implements EntityFactor
      */
     public function supports(string $name): bool
     {
+        try {
+            $this->metadataFactory->getMetadataFor($name);
+        } catch (MappingException $e) {
+            return false;
+        }
+
         return true;
     }
 
