@@ -24,6 +24,7 @@ use Vainyl\Core\ArrayInterface;
 use Vainyl\Core\Hydrator\AbstractHydrator;
 use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
 use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
+use Vainyl\Doctrine\ORM\Exception\UnknownReferenceEntityException;
 use Vainyl\Entity\EntityInterface;
 
 /**
@@ -126,48 +127,40 @@ class DoctrineEntityHydrator extends AbstractHydrator
         $entity = $classMetadata->newInstance();
 
         foreach ($entityData as $field => $value) {
+            $reflectionField = $processedValue = null;
             switch (true) {
                 case array_key_exists($field, $classMetadata->fieldMappings):
                     $fieldMapping = $classMetadata->fieldMappings[$field];
-                    $classMetadata->reflFields[$fieldMapping['fieldName']]
-                        ->setValue(
-                            $entity,
-                            Type::getType($fieldMapping['type'])
-                                ->convertToPHPValue(
-                                    $value,
-                                    $this->databasePlatform
-                                )
-                        );
+                    $reflectionField = $classMetadata->reflFields[$fieldMapping['fieldName']];
+                    $processedValue = Type::getType($fieldMapping['type'])->convertToPHPValue(
+                        $value,
+                        $this->databasePlatform
+                    );
                     break;
                 case array_key_exists($field, $classMetadata->associationMappings):
                     $associationMapping = $classMetadata->associationMappings[$field];
                     $referenceEntity = $associationMapping['targetEntity'];
+                    $reflectionField = $classMetadata->reflFields[$associationMapping['fieldName']];
                     switch ($associationMapping['type']) {
                         case ClassMetadata::ONE_TO_ONE:
                         case ClassMetadata::MANY_TO_ONE:
-                            $classMetadata->reflFields[$associationMapping['fieldName']]
-                                ->setValue(
-                                    $entity,
-                                    $this->getRepository($referenceEntity)->find($value)
-                                );
-
+                            if (null === ($processedValue = $this->getRepository($referenceEntity)->find($value))) {
+                                throw new UnknownReferenceEntityException($this, $referenceEntity, $value);
+                            }
                             break;
                         case ClassMetadata::ONE_TO_MANY:
                         case ClassMetadata::MANY_TO_MANY:
-                            $collection = new ArrayCollection();
+                            $processedValue = new ArrayCollection();
                             $repository = $this->getRepository($referenceEntity);
                             foreach ($value as $referenceData) {
-                                $collection->add($repository->find($referenceData));
+                                $processedValue->add($repository->find($referenceData));
                             }
-                            $classMetadata->reflFields[$associationMapping['fieldName']]
-                                ->setValue(
-                                    $entity,
-                                    $collection
-                                );
-
                             break;
                     }
                     break;
+            }
+            if (null === $reflectionField) {
+                $reflectionField->setValue($entity, $processedValue);
             }
         }
 

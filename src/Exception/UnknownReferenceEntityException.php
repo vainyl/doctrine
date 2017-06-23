@@ -31,15 +31,15 @@ class UnknownReferenceEntityException extends AbstractHydratorException
      *
      * @param HydratorInterface $hydrator
      * @param string            $entityName
-     * @param mixed             $referenceId
+     * @param array             $referenceId
      */
-    public function __construct(HydratorInterface $hydrator, string $entityName, $referenceId)
+    public function __construct(HydratorInterface $hydrator, string $entityName, array $referenceId)
     {
         $this->entityName = $entityName;
         $this->referenceId = $referenceId;
         parent::__construct(
             $hydrator,
-            sprintf('Cannot find reference entity %s by id %s', $entityName, $referenceId)
+            sprintf('Cannot find reference entity %s by id %s', $entityName, json_encode($referenceId))
         );
     }
 
