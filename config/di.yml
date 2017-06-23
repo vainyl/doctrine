@@ -21,9 +21,11 @@ services:
       - '@doctrine.configuration.orm'
       - '@doctrine.event.manager'
       - '@time.factory'
+    tags:
+      - {name: 'doctrine.manager', alias: 'entity'}
   doctrine.entity.manager.factory:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityManagerFactory
-  doctrine.connection.factory:
+  doctrine.connection.factory.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConnectionFactory
     arguments: ['@connection.storage']
   doctrine.entity.metadata.factory:
@@ -37,7 +39,7 @@ services:
     factory: ['@doctrine.entity.database.connection', 'getDatabasePlatform']
   database.factory.doctrine.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMDatabaseFactory
-    arguments: ['@doctrine.connection.factory', '@doctrine.configuration.orm', '@doctrine.event.manager']
+    arguments: ['@doctrine.connection.factory.orm', '@doctrine.configuration.orm', '@doctrine.event.manager']
   collection.factory.sequence.entity:
     decorates: collection.factory.sequence
     decoration_priority: 600
