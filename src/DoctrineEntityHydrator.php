@@ -18,11 +18,12 @@ use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\Common\Persistence\ObjectRepository as DoctrineRepositoryInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Vainyl\Core\ArrayInterface;
 use Vainyl\Core\Hydrator\AbstractHydrator;
-use Vainyl\Core\Hydrator\HydratorInterface;
+use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
+use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
 use Vainyl\Entity\EntityInterface;
 
 /**
@@ -30,38 +31,38 @@ use Vainyl\Entity\EntityInterface;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterface
+class DoctrineEntityHydrator extends AbstractHydrator
 {
-    private $metadataFactory;
+    private $doctrineRegistry;
 
     private $databasePlatform;
 
-    private $doctrineRegistry;
+    private $metadataFactory;
 
     /**
      * DoctrineEntityHydrator constructor.
      *
-     * @param ClassMetadataFactory      $metadataFactory
-     * @param AbstractPlatform          $databasePlatform
      * @param DoctrineRegistryInterface $doctrineRegistry
+     * @param AbstractPlatform          $databasePlatform
+     * @param ClassMetadataFactory      $metadataFactory
      */
     public function __construct(
-        ClassMetadataFactory $metadataFactory,
+        DoctrineRegistryInterface $doctrineRegistry,
         AbstractPlatform $databasePlatform,
-        DoctrineRegistryInterface $doctrineRegistry
+        ClassMetadataFactory $metadataFactory
     ) {
-        $this->metadataFactory = $metadataFactory;
-        $this->databasePlatform = $databasePlatform;
         $this->doctrineRegistry = $doctrineRegistry;
+        $this->databasePlatform = $databasePlatform;
+        $this->metadataFactory = $metadataFactory;
     }
 
     /**
      * @inheritDoc
      */
-    public function supports($object): bool
+    public function supports(string $name): bool
     {
         try {
-            $this->metadataFactory->getMetadataFor(get_class($object));
+            $this->metadataFactory->getMetadataFor($name);
         } catch (MappingException $e) {
             return false;
         }
@@ -80,17 +81,51 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
     }
 
     /**
+     * @param array         $entityData
+     * @param ClassMetadata $classMetadata
+     *
+     * @return string
+     */
+    public function getEntityName(array $entityData, ClassMetadata $classMetadata): string
+    {
+        if (ClassMetadata::INHERITANCE_TYPE_NONE === $classMetadata->inheritanceType) {
+            return $classMetadata->name;
+        }
+
+        if (false === array_key_exists($classMetadata->discriminatorColumn['name'], $entityData)) {
+            throw new MissingDiscriminatorColumnException(
+                $this,
+                $classMetadata->discriminatorColumn['name'],
+                $entityData
+            );
+        }
+
+        $discriminatorColumnValue = $entityData[$classMetadata->discriminatorColumn['name']];
+        if (false === array_key_exists($discriminatorColumnValue, $classMetadata->discriminatorMap)) {
+            throw new UnknownDiscriminatorValueException(
+                $this,
+                $discriminatorColumnValue,
+                $classMetadata->discriminatorMap
+            );
+        }
+
+        return $classMetadata->discriminatorMap[$discriminatorColumnValue];
+    }
+
+    /**
      * @inheritDoc
      */
-    public function doHydrate($entity, array $externalData): ArrayInterface
+    public function doCreate(string $name, array $entityData = []): ArrayInterface
     {
         /**
-         * @var ClassMetadataInfo $classMetadata
-         * @var EntityInterface   $entity
+         * @var ClassMetadata   $classMetadata
+         * @var EntityInterface $entity
          */
-        $classMetadata = $this->metadataFactory->getMetadataFor(get_class($entity));
+        $entityName = $this->getEntityName($entityData, $this->metadataFactory->getMetadataFor($name));
+        $classMetadata = $this->metadataFactory->getMetadataFor($entityName);
+        $entity = $classMetadata->newInstance();
 
-        foreach ($externalData as $field => $value) {
+        foreach ($entityData as $field => $value) {
             switch (true) {
                 case array_key_exists($field, $classMetadata->fieldMappings):
                     $fieldMapping = $classMetadata->fieldMappings[$field];
@@ -108,8 +143,8 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
                     $associationMapping = $classMetadata->associationMappings[$field];
                     $referenceEntity = $associationMapping['targetEntity'];
                     switch ($associationMapping['type']) {
-                        case ClassMetadataInfo::ONE_TO_ONE:
-                        case ClassMetadataInfo::MANY_TO_ONE:
+                        case ClassMetadata::ONE_TO_ONE:
+                        case ClassMetadata::MANY_TO_ONE:
                             $classMetadata->reflFields[$associationMapping['fieldName']]
                                 ->setValue(
                                     $entity,
@@ -117,8 +152,8 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
                                 );
 
                             break;
-                        case ClassMetadataInfo::ONE_TO_MANY:
-                        case ClassMetadataInfo::MANY_TO_MANY:
+                        case ClassMetadata::ONE_TO_MANY:
+                        case ClassMetadata::MANY_TO_MANY:
                             $collection = new ArrayCollection();
                             $repository = $this->getRepository($referenceEntity);
                             foreach ($value as $referenceData) {
@@ -137,5 +172,13 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
         }
 
         return $entity;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function doUpdate($object, array $data): ArrayInterface
+    {
+        trigger_error('Method doUpdate is not implemented', E_USER_ERROR);
     }
 }
