@@ -63,6 +63,6 @@ services:
       - {name: 'hydrator', alias: 'doctrine.entity'}
   entity.factory.doctrine:
     class: Vainyl\Doctrine\ORM\DoctrineEntityFactory
-    arguments: ['@hydrator.storage', '@doctrine.entity.metadata.factory']
+    arguments: ['@entity.hydrator.doctrine', '@doctrine.entity.metadata.factory']
     tags:
       - {name: 'array.factory', alias: 'doctrine.entity'}

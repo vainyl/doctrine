@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Exception;
 
-use Vainyl\Entity\Exception\AbstractEntityFactoryException;
+use Vainyl\Core\Exception\AbstractArrayFactoryException;
 use Vainyl\Entity\Factory\EntityFactoryInterface;
 
 /**
@@ -20,7 +20,7 @@ use Vainyl\Entity\Factory\EntityFactoryInterface;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class UnknownDiscriminatorValueException extends AbstractEntityFactoryException
+class UnknownDiscriminatorValueException extends AbstractArrayFactoryException
 {
     private $value;
 

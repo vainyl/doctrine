@@ -28,19 +28,19 @@ use Vainyl\Entity\Factory\EntityFactoryInterface;
  */
 class DoctrineEntityFactory extends AbstractArrayFactory implements EntityFactoryInterface
 {
-    private $hydratorStorage;
+    private $hydrator;
 
     private $metadataFactory;
 
     /**
      * DoctrineEntityFactory constructor.
      *
-     * @param \ArrayAccess         $hydratorStorage
+     * @param HydratorInterface    $hydrator
      * @param ClassMetadataFactory $metadataFactory
      */
-    public function __construct(\ArrayAccess $hydratorStorage, ClassMetadataFactory $metadataFactory)
+    public function __construct(HydratorInterface $hydrator, ClassMetadataFactory $metadataFactory)
     {
-        $this->hydratorStorage = $hydratorStorage;
+        $this->hydrator = $hydrator;
         $this->metadataFactory = $metadataFactory;
     }
 
@@ -92,15 +92,6 @@ class DoctrineEntityFactory extends AbstractArrayFactory implements EntityFactor
         $entityName = $this->getEntityName($entityData, $this->metadataFactory->getMetadataFor($name));
         $entity = $this->metadataFactory->getMetadataFor($entityName)->newInstance();
 
-        /**
-         * @var HydratorInterface $hydrator
-         */
-        foreach ($this->hydratorStorage as $hydrator) {
-            if ($hydrator->supports($entity)) {
-                return $hydrator->hydrate($entity, $entityData);
-            }
-        }
-
-        return null;
+        return $this->hydrator->hydrate($entity, $entityData);
     }
 }
