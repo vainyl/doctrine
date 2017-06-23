@@ -58,7 +58,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
     /**
      * @inheritDoc
      */
-    public function supports(object $object): bool
+    public function supports($object): bool
     {
         try {
             $this->metadataFactory->getMetadataFor(get_class($object));
@@ -91,7 +91,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
     /**
      * @inheritDoc
      */
-    public function doHydrate(object $entity, array $externalData): ArrayInterface
+    public function doHydrate($entity, array $externalData): ArrayInterface
     {
         /**
          * @var ClassMetadataInfo $classMetadata
