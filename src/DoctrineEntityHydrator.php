@@ -13,13 +13,14 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\ManagerRegistry as DoctrineRegistryInterface;
 use Doctrine\Common\Persistence\Mapping\MappingException;
+use Doctrine\Common\Persistence\ObjectRepository as DoctrineRepositoryInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Vainyl\Core\ArrayInterface;
-use Vainyl\Core\ArrayX\Factory\ArrayFactoryInterface;
 use Vainyl\Core\Hydrator\AbstractHydrator;
 use Vainyl\Core\Hydrator\HydratorInterface;
 use Vainyl\Entity\EntityInterface;
@@ -35,19 +36,23 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
 
     private $databasePlatform;
 
+    private $doctrineRegistry;
+
     /**
      * DoctrineEntityHydrator constructor.
      *
-     * @param ClassMetadataFactory $metadataFactory
-     * @param AbstractPlatform     $databasePlatform
+     * @param ClassMetadataFactory      $metadataFactory
+     * @param AbstractPlatform          $databasePlatform
+     * @param DoctrineRegistryInterface $doctrineRegistry
      */
     public function __construct(
         ClassMetadataFactory $metadataFactory,
-        AbstractPlatform $databasePlatform
-
+        AbstractPlatform $databasePlatform,
+        DoctrineRegistryInterface $doctrineRegistry
     ) {
         $this->metadataFactory = $metadataFactory;
         $this->databasePlatform = $databasePlatform;
+        $this->doctrineRegistry = $doctrineRegistry;
     }
 
     /**
@@ -67,20 +72,11 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
     /**
      * @param string $className
      *
-     * @return ArrayFactoryInterface
+     * @return DoctrineRepositoryInterface
      */
-    public function findFactory(string $className): ArrayFactoryInterface
+    public function getRepository(string $className): DoctrineRepositoryInterface
     {
-        /**
-         * @var ArrayFactoryInterface $factory
-         */
-        foreach ($this->getFactoryStorage() as $factory) {
-            if ($factory->supports($className)) {
-                return $factory;
-            }
-        }
-
-        return null;
+        return $this->doctrineRegistry->getRepository($className);
     }
 
     /**
@@ -117,16 +113,16 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
                             $classMetadata->reflFields[$associationMapping['fieldName']]
                                 ->setValue(
                                     $entity,
-                                    $this->findFactory($referenceEntity)->create($referenceEntity, $value)
+                                    $this->getRepository($referenceEntity)->find($value)
                                 );
 
                             break;
                         case ClassMetadataInfo::ONE_TO_MANY:
                         case ClassMetadataInfo::MANY_TO_MANY:
                             $collection = new ArrayCollection();
-                            $factory = $this->findFactory($referenceEntity);
+                            $repository = $this->getRepository($referenceEntity);
                             foreach ($value as $referenceData) {
-                                $collection->add($factory->create($referenceEntity . $referenceData));
+                                $collection->add($repository->find($referenceData));
                             }
                             $classMetadata->reflFields[$associationMapping['fieldName']]
                                 ->setValue(
