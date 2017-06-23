@@ -1,0 +1,63 @@
+services:
+  doctrine.configuration.orm:
+    class: Doctrine\ORM\Configuration
+    factory: ['@doctrine.configuration.factory.orm', 'getConfiguration']
+    arguments:
+      - '@doctrine.cache'
+      - '@app.environment'
+      - 'yaml'
+      - 'entitymap'
+      - '.orm.yml'
+      - 'doctrine'
+      - 'Proxy'
+  doctrine.configuration.factory.orm:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory
+    arguments: ['@extension.storage']
+  doctrine.entity.manager:
+    class: Vainyl\Doctrine\ORM\DoctrineEntityManager
+    factory: ['@doctrine.entity.manager.factory', 'create']
+    arguments:
+      - '@database.doctrine.orm'
+      - '@doctrine.configuration.orm'
+      - '@doctrine.event.manager'
+      - '@time.factory'
+    tags:
+      - {name: 'doctrine.manager', alias: 'entity'}
+  doctrine.entity.manager.factory:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityManagerFactory
+  doctrine.connection.factory.orm:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConnectionFactory
+    arguments: ['@connection.storage']
+  doctrine.entity.metadata.factory:
+    class: Doctrine\ORM\Mapping\ClassMetadataFactory
+    factory: ['@doctrine.entity.manager', 'getMetadataFactory']
+  doctrine.entity.database.connection:
+    class: Doctrine\DBAL\Connection
+    factory: ['@doctrine.entity.manager', 'getConnection']
+  doctrine.entity.database.platform:
+    class: Doctrine\DBAL\Platforms\AbstractPlatform
+    factory: ['@doctrine.entity.database.connection', 'getDatabasePlatform']
+  database.factory.doctrine.orm:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineORMDatabaseFactory
+    arguments: ['@doctrine.connection.factory.orm', '@doctrine.configuration.orm', '@doctrine.event.manager']
+  collection.factory.sequence.entity:
+    decorates: collection.factory.sequence
+    decoration_priority: 600
+    class: Vainyl\Doctrine\ORM\Operation\Decorator\DoctrineCollectionFactoryDecorator
+    arguments: ['@collection.factory.sequence.entity.inner', '@doctrine.entity.manager']
+  entity.operation.factory.doctrine:
+    class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
+    arguments: ['@operation.factory', '@doctrine.entity.manager']
+  app.bootstrapper.doctrine.orm.type:
+    class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineTypeBootstrapper
+    arguments: ['@database.doctrine.orm', '@time.factory']
+    tags:
+      - {name: 'bootstrapper'}
+  app.bootstrapper.doctrine.orm.proxy:
+    class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineProxyBootstrapper
+    arguments: ['@app.environment']
+    tags:
+      - {name: 'bootstrapper'}
+  entity.hydrator.doctrine:
+    class: Vainyl\Doctrine\ORM\DoctrineEntityHydrator
+    arguments: ['@doctrine.registry', '@doctrine.entity.database.platform', '@doctrine.entity.metadata.factory']
