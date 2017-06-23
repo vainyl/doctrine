@@ -76,7 +76,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
      */
     public function getRepository(string $className): DoctrineRepositoryInterface
     {
-        return $this->doctrineRegistry->getRepository($className);
+        return $this->doctrineRegistry->getRepository($className, 'entity');
     }
 
     /**
