@@ -35,24 +35,19 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
 
     private $databasePlatform;
 
-    private $factoryStorage;
-
     /**
      * DoctrineEntityHydrator constructor.
      *
      * @param ClassMetadataFactory $metadataFactory
      * @param AbstractPlatform     $databasePlatform
-     * @param \ArrayAccess         $factoryStorage
      */
     public function __construct(
         ClassMetadataFactory $metadataFactory,
-        AbstractPlatform $databasePlatform,
-        \ArrayAccess $factoryStorage
+        AbstractPlatform $databasePlatform
 
     ) {
         $this->metadataFactory = $metadataFactory;
         $this->databasePlatform = $databasePlatform;
-        $this->factoryStorage = $factoryStorage;
     }
 
     /**
@@ -79,7 +74,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
         /**
          * @var ArrayFactoryInterface $factory
          */
-        foreach ($this->factoryStorage as $factory) {
+        foreach ($this->getFactoryStorage() as $factory) {
             if ($factory->supports($className)) {
                 return $factory;
             }

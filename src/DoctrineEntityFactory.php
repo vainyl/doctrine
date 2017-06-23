@@ -14,8 +14,8 @@ namespace Vainyl\Doctrine\ORM;
 
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\ArrayInterface;
+use Vainyl\Core\ArrayX\Factory\AbstractArrayFactory;
 use Vainyl\Core\Hydrator\HydratorInterface;
 use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
 use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
@@ -26,7 +26,7 @@ use Vainyl\Entity\Factory\EntityFactoryInterface;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntityFactory extends AbstractIdentifiable implements EntityFactoryInterface
+class DoctrineEntityFactory extends AbstractArrayFactory implements EntityFactoryInterface
 {
     private $hydratorStorage;
 
@@ -87,7 +87,7 @@ class DoctrineEntityFactory extends AbstractIdentifiable implements EntityFactor
     /**
      * @inheritDoc
      */
-    public function create(string $name, array $entityData = []): ArrayInterface
+    public function doCreate(string $name, array $entityData = []): ArrayInterface
     {
         $entityName = $this->getEntityName($entityData, $this->metadataFactory->getMetadataFor($name));
         $entity = $this->metadataFactory->getMetadataFor($entityName)->newInstance();
