@@ -132,6 +132,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements HydratorInterfa
 
                             break;
                     }
+                    break;
             }
         }
 
