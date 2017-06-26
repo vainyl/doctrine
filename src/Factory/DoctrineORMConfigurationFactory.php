@@ -36,9 +36,9 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
     /**
      * DoctrineConfigurationFactory constructor.
      *
-     * @param \IteratorAggregate $bundleStorage
+     * @param \Traversable $bundleStorage
      */
-    public function __construct(\IteratorAggregate $bundleStorage)
+    public function __construct(\Traversable $bundleStorage)
     {
         $this->bundleStorage = $bundleStorage;
     }
@@ -69,7 +69,7 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
         /**
          * @var AbstractExtension $bundle
          */
-        foreach ($this->bundleStorage->getIterator() as $bundle) {
+        foreach ($this->bundleStorage as $bundle) {
             $paths[$bundle->getConfigDirectory()] = $bundle->getNamespace();
         }
 
