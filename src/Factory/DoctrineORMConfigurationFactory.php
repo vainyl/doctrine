@@ -21,8 +21,7 @@ use Doctrine\ORM\Mapping\Driver\XmlDriver;
 use Doctrine\ORM\Tools\Setup;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\Application\EnvironmentInterface;
-use Vainyl\Core\Extension\AbstractExtension;
-use Vainyl\Core\Extension\ExtensionStorageInterface;
+use Vainyl\Core\Extension\ExtensionInterface;
 use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineConfigTypeException;
 
 /**
@@ -32,16 +31,16 @@ use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineConfigTypeException;
  */
 class DoctrineORMConfigurationFactory extends AbstractIdentifiable
 {
-    private $extensionStorage;
+    private $bundleStorage;
 
     /**
      * DoctrineConfigurationFactory constructor.
      *
-     * @param ExtensionStorageInterface $extensionStorage
+     * @param \Traversable $bundleStorage
      */
-    public function __construct(ExtensionStorageInterface $extensionStorage)
+    public function __construct(\Traversable $bundleStorage)
     {
-        $this->extensionStorage = $extensionStorage;
+        $this->bundleStorage = $bundleStorage;
     }
 
     /**
@@ -68,10 +67,10 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
     ): Configuration {
         $paths = [];
         /**
-         * @var AbstractExtension $extension
+         * @var ExtensionInterface $bundle
          */
-        foreach ($this->extensionStorage->getIterator() as $extension) {
-            $paths[$extension->getConfigDirectory()] = $extension->getNamespace();
+        foreach ($this->bundleStorage as $bundle) {
+            $paths[$bundle->getConfigDirectory()] = $bundle->getNamespace();
         }
 
         switch ($driverName) {
