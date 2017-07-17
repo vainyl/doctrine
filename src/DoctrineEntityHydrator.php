@@ -170,8 +170,31 @@ class DoctrineEntityHydrator extends AbstractHydrator
     /**
      * @inheritDoc
      */
-    public function doUpdate($object, array $data): ArrayInterface
+    public function doUpdate($entity, array $entityData): ArrayInterface
     {
-        trigger_error('Method doUpdate is not implemented', E_USER_ERROR);
+        /**
+         * @var ClassMetadata   $classMetadata
+         * @var EntityInterface $entity
+         */
+        $classMetadata = $this->metadataFactory->getMetadataFor(get_class($entity));
+
+        foreach ($entityData as $field => $value) {
+            $reflectionField = $processedValue = null;
+            switch (true) {
+                case array_key_exists($field, $classMetadata->fieldMappings):
+                    $fieldMapping = $classMetadata->fieldMappings[$field];
+                    $reflectionField = $classMetadata->reflFields[$fieldMapping['fieldName']];
+                    $processedValue = Type::getType($fieldMapping['type'])->convertToPHPValue(
+                        $value,
+                        $this->databasePlatform
+                    );
+                    break;
+            }
+            if (null !== $reflectionField) {
+                $reflectionField->setValue($entity, $processedValue);
+            }
+        }
+
+        return $entity;
     }
 }
