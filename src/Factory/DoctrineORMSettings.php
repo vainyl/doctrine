@@ -15,6 +15,7 @@ namespace Vainyl\Doctrine\ORM\Factory;
 use Vainyl\Core\AbstractArray;
 use Vainyl\Core\ArrayInterface;
 use Doctrine\Common\Cache\Cache as DoctrineCacheInterface;
+use Vainyl\Doctrine\Common\DoctrineSettings;
 
 /**
  * Class DoctrineORMSettings
@@ -53,6 +54,7 @@ class DoctrineORMSettings extends AbstractArray implements ArrayInterface
         string $proxyNamespace,
         string $tempDir
     ) {
+        $this->doctrineSettings = $doctrineSettings;
         $this->driverName = $driverName;
         $this->globalFileName = $globalFileName;
         $this->fileExtension = $fileExtension;

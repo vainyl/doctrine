@@ -56,7 +56,7 @@ class DoctrineORMExtension extends AbstractFrameworkExtension
         $container->setDefinition('doctrine.settings.orm', $settingsDefinition);
 
         $configurationDefinition = $container->getDefinition('doctrine.configuration.orm');
-        $configurationDefinition->replaceArgument(2, new Reference('doctrine.settings.orm'));
+        $configurationDefinition->replaceArgument(1, new Reference('doctrine.settings.orm'));
 
         return $this;
     }
