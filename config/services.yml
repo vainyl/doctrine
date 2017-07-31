@@ -1,13 +1,13 @@
 services:
-  doctrine.settings.orm:
-    class: Vainyl\Doctrine\ORM\Factory\DoctrineORMSettings
+  doctrine.settings.entity:
+    class: Vainyl\Doctrine\ORM\DoctrineEntitySettings
     arguments: ['@doctrine.settings', 'yaml', 'entitymap', 'odm.yml', '/tmp', 'Proxy']
   doctrine.configuration.orm:
     class: Doctrine\ORM\Configuration
     factory: ['@doctrine.configuration.factory.orm', 'getConfiguration']
     arguments:
       - '@app.environment'
-      - '@doctrine.settings.orm'
+      - '@doctrine.settings.entity'
   doctrine.configuration.factory.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory
     arguments: ['@bundle.storage']

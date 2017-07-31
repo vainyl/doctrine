@@ -10,18 +10,18 @@
  */
 declare(strict_types=1);
 
-namespace Vainyl\Doctrine\ORM\Factory;
+namespace Vainyl\Doctrine\ORM;
 
 use Vainyl\Core\AbstractArray;
 use Doctrine\Common\Cache\Cache as DoctrineCacheInterface;
 use Vainyl\Doctrine\Common\DoctrineSettings;
 
 /**
- * Class DoctrineORMSettings
+ * Class DoctrineEntitySettings
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineORMSettings extends AbstractArray
+class DoctrineEntitySettings extends AbstractArray
 {
     private $doctrineSettings;
 
@@ -36,7 +36,7 @@ class DoctrineORMSettings extends AbstractArray
     private $tempDir;
 
     /**
-     * DoctrineORMSettings constructor.
+     * DoctrineEntitySettings constructor.
      *
      * @param DoctrineSettings $doctrineSettings
      * @param string           $driverName

@@ -31,15 +31,15 @@ class DoctrineORMExtension extends AbstractFrameworkExtension
     {
         parent::load($configs, $container);
 
-        if (false === $container->hasDefinition('doctrine.settings.orm')) {
-            throw new MissingRequiredServiceException($container, 'doctrine.settings.orm');
+        if (false === $container->hasDefinition('doctrine.settings.entity')) {
+            throw new MissingRequiredServiceException($container, 'doctrine.settings.entity');
         }
 
         $configuration = new DoctrineORMConfiguration();
         $ormConfig = $this->processConfiguration($configuration, $configs);
 
         $container
-            ->findDefinition('doctrine.settings.orm')
+            ->findDefinition('doctrine.settings.entity')
             ->replaceArgument(1, $ormConfig['config'])
             ->replaceArgument(2, $ormConfig['file'])
             ->replaceArgument(3, $ormConfig['extension'])

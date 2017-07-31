@@ -21,6 +21,7 @@ use Doctrine\ORM\Tools\Setup;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Core\Application\EnvironmentInterface;
 use Vainyl\Core\Extension\ExtensionInterface;
+use Vainyl\Doctrine\ORM\DoctrineEntitySettings;
 use Vainyl\Doctrine\ORM\Exception\UnknownDoctrineConfigTypeException;
 
 /**
@@ -43,14 +44,14 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
     }
 
     /**
-     * @param EnvironmentInterface $environment
-     * @param DoctrineORMSettings  $settings
+     * @param EnvironmentInterface   $environment
+     * @param DoctrineEntitySettings $settings
      *
      * @return Configuration
      *
      * @throws UnknownDoctrineConfigTypeException
      */
-    public function getConfiguration(EnvironmentInterface $environment, DoctrineORMSettings $settings): Configuration
+    public function getConfiguration(EnvironmentInterface $environment, DoctrineEntitySettings $settings): Configuration
     {
         $paths = [];
         foreach ($settings->getExtraPaths() as $extraPath) {
@@ -92,6 +93,7 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
         $config->setProxyDir($environment->getCacheDirectory());
         $config->setProxyNamespace($settings->getCache());
         $config->setMetadataDriverImpl($driver);
+        $config->setClassMetadataFactoryName(DoctrineEntityMetadataFactory::class);
 
         return $config;
     }
