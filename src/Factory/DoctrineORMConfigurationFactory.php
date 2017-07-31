@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Factory;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Cache\Cache as DoctrineCacheInterface;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
@@ -33,44 +32,31 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
 {
     private $bundleStorage;
 
-    private $extraPaths = [];
-
     /**
      * DoctrineConfigurationFactory constructor.
      *
      * @param \Traversable $bundleStorage
-     * @param array $extraPaths
      */
-    public function __construct(\Traversable $bundleStorage, array $extraPaths = [])
+    public function __construct(\Traversable $bundleStorage)
     {
         $this->bundleStorage = $bundleStorage;
-        $this->extraPaths = $extraPaths;
     }
 
     /**
-     * @param DoctrineCacheInterface $doctrineCache
-     * @param EnvironmentInterface   $environment
-     * @param string                 $driverName
-     * @param string                 $globalFileName
-     * @param string                 $fileExtension
-     * @param string                 $proxyNamespace
-     * @param string                 $tempDir
+     * @param EnvironmentInterface $environment
+     * @param DoctrineORMSettings  $settings
      *
      * @return Configuration
      *
      * @throws UnknownDoctrineConfigTypeException
      */
-    public function getConfiguration(
-        DoctrineCacheInterface $doctrineCache,
-        EnvironmentInterface $environment,
-        string $driverName,
-        string $globalFileName,
-        string $fileExtension,
-        string $proxyNamespace,
-        string $tempDir
-    ): Configuration {
+    public function getConfiguration(EnvironmentInterface $environment, DoctrineORMSettings $settings): Configuration
+    {
         $paths = [];
-        foreach ($this->extraPaths as $extraPath) {
+        foreach ($settings->getExtraPaths() as $extraPath) {
+            if (false === is_dir($extraPath['dir'])) {
+                continue;
+            }
             $paths[$extraPath['dir']] = $extraPath['prefix'];
         }
         /**
@@ -84,27 +70,27 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
             $paths[$bundle->getConfigDirectory()] = $bundle->getNamespace();
         }
 
-        switch ($driverName) {
+        switch ($settings->getDriverName()) {
             case 'yaml':
-                $driver = new SimplifiedYamlDriver($paths, $fileExtension);
+                $driver = new SimplifiedYamlDriver($paths, $settings->getFileExtension());
                 break;
             case 'xml':
-                $driver = new XmlDriver($paths, $fileExtension);
+                $driver = new XmlDriver($paths, $settings->getFileExtension());
                 break;
             case 'annotation':
                 $driver = new AnnotationDriver(new AnnotationReader(), $paths);
                 break;
             default:
-                throw new UnknownDoctrineConfigTypeException($this, $driverName);
+                throw new UnknownDoctrineConfigTypeException($this, $settings->getDriverName());
         }
-        $driver->setGlobalBasename($globalFileName);
+        $driver->setGlobalBasename($settings->getGlobalFileName());
         $config = Setup::createConfiguration(
             $environment->isDebugEnabled(),
-            $environment->getCacheDirectory() . DIRECTORY_SEPARATOR . $tempDir,
-            $doctrineCache
+            $environment->getCacheDirectory() . DIRECTORY_SEPARATOR . $settings->getTempDir(),
+            $settings->getCache()
         );
         $config->setProxyDir($environment->getCacheDirectory());
-        $config->setProxyNamespace($proxyNamespace);
+        $config->setProxyNamespace($settings->getCache());
         $config->setMetadataDriverImpl($driver);
 
         return $config;
