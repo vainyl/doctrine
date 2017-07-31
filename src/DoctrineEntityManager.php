@@ -19,6 +19,8 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Vainyl\Doctrine\ORM\Exception\LevelIntegrityDoctrineException;
+use Vainyl\Domain\DomainInterface;
+use Vainyl\Domain\Storage\DomainStorageInterface;
 use Vainyl\Time\Factory\TimeFactoryInterface;
 
 /**
@@ -26,7 +28,7 @@ use Vainyl\Time\Factory\TimeFactoryInterface;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntityManager extends EntityManager
+class DoctrineEntityManager extends EntityManager implements DomainStorageInterface
 {
     /**
      * @var TimeFactoryInterface
@@ -97,14 +99,30 @@ class DoctrineEntityManager extends EntityManager
     /**
      * @inheritDoc
      */
-    public function init()
+    public function findById(string $name, $id): ?DomainInterface
     {
-        if (0 <= $this->flushLevel) {
-            $this->flushLevel++;
-            return $this;
-        }
+        return $this->getRepository($name)->find($id);
+    }
 
-        throw new LevelIntegrityDoctrineException($this, $this->flushLevel);
+    /**
+     * @inheritDoc
+     */
+    public function findMany(
+        string $name,
+        array $criteria = [],
+        array $orderBy = [],
+        int $limit = 0,
+        int $offset = 0
+    ): array {
+        return $this->getRepository($name)->findBy($criteria, $orderBy, $limit, $offset);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOne(string $name, array $criteria = [], array $orderBy = []): ?DomainInterface
+    {
+        return $this->getRepository($name)->findOneBy($criteria, $orderBy);
     }
 
     /**
@@ -128,10 +146,40 @@ class DoctrineEntityManager extends EntityManager
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getId(): ?string
+    {
+        return spl_object_hash($this);
+    }
+
+    /**
      * @return TimeFactoryInterface
      */
     public function getTimeFactory()
     {
         return $this->timeFactory;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function init()
+    {
+        if (0 <= $this->flushLevel) {
+            $this->flushLevel++;
+
+            return $this;
+        }
+
+        throw new LevelIntegrityDoctrineException($this, $this->flushLevel);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supports(string $name): bool
+    {
+        return $this->getMetadataFactory()->hasMetadataFor($name);
     }
 }
