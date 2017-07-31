@@ -20,6 +20,7 @@ services:
       - '@doctrine.event.manager'
       - '@time.factory'
     tags:
+      - {name: 'domain.storage', alias: 'doctrine.orm'}
       - {name: 'doctrine.manager', alias: 'entity'}
   doctrine.entity.manager.factory:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityManagerFactory
@@ -46,6 +47,8 @@ services:
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@operation.factory', '@doctrine.entity.manager']
+    tags:
+      - {name: 'domain.operation.factory', alias: 'doctrine.orm'}
   app.bootstrapper.doctrine.orm.type:
     class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineTypeBootstrapper
     arguments: ['@database.doctrine.orm', '@time.factory']
