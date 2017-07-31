@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Factory;
 
 use Vainyl\Core\AbstractArray;
-use Vainyl\Core\ArrayInterface;
 use Doctrine\Common\Cache\Cache as DoctrineCacheInterface;
 use Vainyl\Doctrine\Common\DoctrineSettings;
 
@@ -22,7 +21,7 @@ use Vainyl\Doctrine\Common\DoctrineSettings;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineORMSettings extends AbstractArray implements ArrayInterface
+class DoctrineORMSettings extends AbstractArray
 {
     private $doctrineSettings;
 
