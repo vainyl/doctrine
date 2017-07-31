@@ -70,6 +70,10 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
          * @var ExtensionInterface $bundle
          */
         foreach ($this->bundleStorage as $bundle) {
+            $configDirectory = $bundle->getConfigDirectory();
+            if (false === is_dir($configDirectory)) {
+                continue;
+            }
             $paths[$bundle->getConfigDirectory()] = $bundle->getNamespace();
         }
 
