@@ -13,14 +13,16 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Operation\Factory;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Doctrine\ORM\Operation\CreateDoctrineEntityOperation;
 use Vainyl\Doctrine\ORM\Operation\DeleteDoctrineEntityOperation;
 use Vainyl\Doctrine\ORM\Operation\UpdateDoctrineEntityOperation;
 use Vainyl\Doctrine\ORM\Operation\UpsertDoctrineEntityOperation;
+use Vainyl\Domain\DomainInterface;
+use Vainyl\Domain\Operation\Decorator\AbstractDomainOperationFactoryDecorator;
+use Vainyl\Domain\Operation\Factory\DomainOperationFactoryInterface;
 use Vainyl\Entity\EntityInterface;
 use Vainyl\Entity\Operation\Factory\EntityOperationFactoryInterface;
-use Vainyl\Operation\Factory\OperationFactoryInterface;
+use Vainyl\Operation\Collection\Factory\CollectionFactoryInterface;
 use Vainyl\Operation\OperationInterface;
 
 /**
@@ -28,55 +30,88 @@ use Vainyl\Operation\OperationInterface;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntityOperationFactory extends AbstractIdentifiable implements EntityOperationFactoryInterface
+class DoctrineEntityOperationFactory extends AbstractDomainOperationFactoryDecorator implements
+    EntityOperationFactoryInterface
 {
-    private $operationFactory;
+    private $collectionFactory;
 
     private $entityManager;
 
     /**
      * DoctrineEntityOperationFactory constructor.
      *
-     * @param OperationFactoryInterface $operationFactory
-     * @param EntityManagerInterface    $entityManager
+     * @param DomainOperationFactoryInterface $operationFactory
+     * @param CollectionFactoryInterface      $collectionFactory
+     * @param EntityManagerInterface          $entityManager
      */
-    public function __construct(OperationFactoryInterface $operationFactory, EntityManagerInterface $entityManager)
-    {
-        $this->operationFactory = $operationFactory;
+    public function __construct(
+        DomainOperationFactoryInterface $operationFactory,
+        CollectionFactoryInterface $collectionFactory,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->collectionFactory = $collectionFactory;
         $this->entityManager = $entityManager;
+        parent::__construct($operationFactory);
+    }
+
+    /**
+     * @param EntityInterface $domain
+     *
+     * @return OperationInterface
+     */
+    public function create(DomainInterface $domain): OperationInterface
+    {
+        return $this->collectionFactory
+            ->create()
+            ->add(parent::create($domain))
+            ->add(new CreateDoctrineEntityOperation($this->entityManager, $domain));
+    }
+
+    /**
+     * @param EntityInterface $domain
+     *
+     * @return OperationInterface
+     */
+    public function delete(DomainInterface $domain): OperationInterface
+    {
+        return $this->collectionFactory
+            ->create()
+            ->add(parent::delete($domain))
+            ->add(new DeleteDoctrineEntityOperation($this->entityManager, $domain));
     }
 
     /**
      * @inheritDoc
      */
-    public function create(EntityInterface $entity): OperationInterface
+    public function supports(DomainInterface $domain): bool
     {
-        return $this->operationFactory->decorate(new CreateDoctrineEntityOperation($this->entityManager, $entity));
+        return $this->entityManager->getMetadataFactory()->hasMetadataFor(get_class($domain));
     }
 
     /**
-     * @inheritDoc
+     * @param EntityInterface $newDomain
+     * @param EntityInterface $oldDomain
+     *
+     * @return OperationInterface
      */
-    public function update(EntityInterface $newEntity, EntityInterface $oldEntity): OperationInterface
+    public function update(DomainInterface $newDomain, DomainInterface $oldDomain): OperationInterface
     {
-        return $this->operationFactory->decorate(
-            new UpdateDoctrineEntityOperation($this->entityManager, $newEntity, $oldEntity)
-        );
+        return $this->collectionFactory
+            ->create()
+            ->add(parent::update($newDomain, $oldDomain))
+            ->add(new UpdateDoctrineEntityOperation($this->entityManager, $newDomain, $oldDomain));
     }
 
     /**
-     * @inheritDoc
+     * @param EntityInterface $domain
+     *
+     * @return OperationInterface
      */
-    public function delete(EntityInterface $entity): OperationInterface
+    public function upsert(DomainInterface $domain): OperationInterface
     {
-        return $this->operationFactory->decorate(new DeleteDoctrineEntityOperation($this->entityManager, $entity));
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function upsert(EntityInterface $entity): OperationInterface
-    {
-        return $this->operationFactory->decorate(new UpsertDoctrineEntityOperation($this->entityManager, $entity));
+        return $this->collectionFactory
+            ->create()
+            ->add(parent::upsert($domain))
+            ->add(new UpsertDoctrineEntityOperation($this->entityManager, $domain));
     }
 }

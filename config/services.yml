@@ -46,7 +46,7 @@ services:
     arguments: ['@collection.factory.sequence.entity.inner', '@doctrine.entity.manager']
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
-    arguments: ['@operation.factory', '@doctrine.entity.manager']
+    arguments: ['@domain.operation.factory', '@collection.factory.sequence', '@doctrine.entity.manager']
     tags:
       - {name: 'domain.operation.factory', alias: 'doctrine.orm'}
   app.bootstrapper.doctrine.orm.type:
