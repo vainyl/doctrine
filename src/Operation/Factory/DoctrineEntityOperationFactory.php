@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Operation\Factory;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\MappingException;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Doctrine\ORM\Operation\CreateDoctrineEntityOperation;
 use Vainyl\Doctrine\ORM\Operation\DeleteDoctrineEntityOperation;
@@ -75,7 +76,13 @@ class DoctrineEntityOperationFactory extends AbstractIdentifiable implements
      */
     public function supports(DomainInterface $domain): bool
     {
-        return $this->entityManager->getMetadataFactory()->hasMetadataFor(get_class($domain));
+        try {
+            $this->entityManager->getMetadataFactory()->getMetadataFor(get_class($domain));
+        } catch (MappingException $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

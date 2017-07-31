@@ -17,6 +17,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\ORMException;
 use Vainyl\Doctrine\ORM\Exception\LevelIntegrityDoctrineException;
 use Vainyl\Domain\DomainInterface;
@@ -180,6 +181,12 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
      */
     public function supports(string $name): bool
     {
-        return $this->getMetadataFactory()->hasMetadataFor($name);
+        try {
+            $this->getMetadataFactory()->getMetadataFor($name);
+        } catch (MappingException $e) {
+            return false;
+        }
+
+        return true;
     }
 }
