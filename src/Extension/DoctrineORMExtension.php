@@ -14,7 +14,6 @@ namespace Vainyl\Doctrine\ORM\Extension;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 use Vainyl\Core\Exception\MissingRequiredServiceException;
 use Vainyl\Core\Extension\AbstractExtension;
@@ -46,13 +45,12 @@ class DoctrineORMExtension extends AbstractFrameworkExtension
             ->setClass(DoctrineORMSettings::class)
             ->setArguments(
                 [
-                    new Reference('doctrine.cache'),
+                    new Reference('doctrine.settings'),
                     $ormConfig['config'],
                     $ormConfig['file'],
                     $ormConfig['extension'],
                     $ormConfig['tmp_dir'],
-                    $ormConfig['proxy'],
-                    new Parameter('doctrine.extra.paths')
+                    $ormConfig['proxy']
                 ]
             );
         $container->setDefinition('doctrine.settings.orm', $settingsDefinition);

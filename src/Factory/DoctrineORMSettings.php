@@ -23,7 +23,7 @@ use Doctrine\Common\Cache\Cache as DoctrineCacheInterface;
  */
 class DoctrineORMSettings extends AbstractArray implements ArrayInterface
 {
-    private $cache;
+    private $doctrineSettings;
 
     private $driverName;
 
@@ -35,35 +35,29 @@ class DoctrineORMSettings extends AbstractArray implements ArrayInterface
 
     private $tempDir;
 
-    private $extraPaths;
-
     /**
      * DoctrineORMSettings constructor.
      *
-     * @param DoctrineCacheInterface $cache
-     * @param string                 $driverName
-     * @param string                 $globalFileName
-     * @param string                 $fileExtension
-     * @param string                 $proxyNamespace
-     * @param string                 $tempDir
-     * @param array                  $extraPaths
+     * @param DoctrineSettings $doctrineSettings
+     * @param string           $driverName
+     * @param string           $globalFileName
+     * @param string           $fileExtension
+     * @param string           $proxyNamespace
+     * @param string           $tempDir
      */
     public function __construct(
-        DoctrineCacheInterface $cache,
+        DoctrineSettings $doctrineSettings,
         string $driverName,
         string $globalFileName,
         string $fileExtension,
         string $proxyNamespace,
-        string $tempDir,
-        array $extraPaths
+        string $tempDir
     ) {
-        $this->cache = $cache;
         $this->driverName = $driverName;
         $this->globalFileName = $globalFileName;
         $this->fileExtension = $fileExtension;
         $this->proxyNamespace = $proxyNamespace;
         $this->tempDir = $tempDir;
-        $this->extraPaths = $extraPaths;
     }
 
     /**
@@ -71,7 +65,7 @@ class DoctrineORMSettings extends AbstractArray implements ArrayInterface
      */
     public function getCache(): DoctrineCacheInterface
     {
-        return $this->cache;
+        return $this->doctrineSettings->getCache();
     }
 
     /**
@@ -80,6 +74,14 @@ class DoctrineORMSettings extends AbstractArray implements ArrayInterface
     public function getDriverName(): string
     {
         return $this->driverName;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExtraPaths(): array
+    {
+        return $this->doctrineSettings->getExtraPaths();
     }
 
     /**
@@ -112,13 +114,5 @@ class DoctrineORMSettings extends AbstractArray implements ArrayInterface
     public function getTempDir(): string
     {
         return $this->tempDir;
-    }
-
-    /**
-     * @return array
-     */
-    public function getExtraPaths(): array
-    {
-        return $this->extraPaths;
     }
 }
