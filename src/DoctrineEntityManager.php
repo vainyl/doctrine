@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM;
 
 use Doctrine\Common\EventManager;
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\ORMException;
 use Vainyl\Doctrine\ORM\Exception\LevelIntegrityDoctrineException;
 use Vainyl\Domain\DomainInterface;

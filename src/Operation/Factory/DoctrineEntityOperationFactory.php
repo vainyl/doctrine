@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Operation\Factory;
 
+use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\MappingException;
 use Vainyl\Core\AbstractIdentifiable;
 use Vainyl\Doctrine\ORM\Operation\CreateDoctrineEntityOperation;
 use Vainyl\Doctrine\ORM\Operation\DeleteDoctrineEntityOperation;
