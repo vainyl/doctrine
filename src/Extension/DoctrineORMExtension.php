@@ -13,12 +13,9 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Extension;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
 use Vainyl\Core\Exception\MissingRequiredServiceException;
 use Vainyl\Core\Extension\AbstractExtension;
 use Vainyl\Core\Extension\AbstractFrameworkExtension;
-use Vainyl\Doctrine\ORM\Factory\DoctrineORMSettings;
 
 /**
  * Class DoctrineORMExtension
@@ -34,29 +31,20 @@ class DoctrineORMExtension extends AbstractFrameworkExtension
     {
         parent::load($configs, $container);
 
-        if (false === $container->hasDefinition('doctrine.configuration.orm')) {
-            throw new MissingRequiredServiceException($container, 'doctrine.configuration.orm');
+        if (false === $container->hasDefinition('doctrine.settings.orm')) {
+            throw new MissingRequiredServiceException($container, 'doctrine.settings.orm');
         }
 
         $configuration = new DoctrineORMConfiguration();
         $ormConfig = $this->processConfiguration($configuration, $configs);
 
-        $settingsDefinition = (new Definition())
-            ->setClass(DoctrineORMSettings::class)
-            ->setArguments(
-                [
-                    new Reference('doctrine.settings'),
-                    $ormConfig['config'],
-                    $ormConfig['file'],
-                    $ormConfig['extension'],
-                    $ormConfig['tmp_dir'],
-                    $ormConfig['proxy']
-                ]
-            );
-        $container->setDefinition('doctrine.settings.orm', $settingsDefinition);
-
-        $configurationDefinition = $container->getDefinition('doctrine.configuration.orm');
-        $configurationDefinition->replaceArgument(1, new Reference('doctrine.settings.orm'));
+        $container
+            ->findDefinition('doctrine.settings.orm')
+            ->replaceArgument(1, $ormConfig['config'])
+            ->replaceArgument(2, $ormConfig['file'])
+            ->replaceArgument(3, $ormConfig['extension'])
+            ->replaceArgument(4, $ormConfig['tmp_dir'])
+            ->replaceArgument(5, $ormConfig['proxy']);
 
         return $this;
     }
