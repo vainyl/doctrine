@@ -12,7 +12,7 @@ services:
       - 'Proxy'
   doctrine.configuration.factory.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory
-    arguments: ['@bundle.storage']
+    arguments: ['@bundle.storage', '%doctrine.extra.paths']
   doctrine.entity.manager:
     class: Vainyl\Doctrine\ORM\DoctrineEntityManager
     factory: ['@doctrine.entity.manager.factory', 'create']

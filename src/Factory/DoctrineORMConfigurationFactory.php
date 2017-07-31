@@ -33,14 +33,18 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
 {
     private $bundleStorage;
 
+    private $extraPaths = [];
+
     /**
      * DoctrineConfigurationFactory constructor.
      *
      * @param \Traversable $bundleStorage
+     * @param array $extraPaths
      */
-    public function __construct(\Traversable $bundleStorage)
+    public function __construct(\Traversable $bundleStorage, array $extraPaths = [])
     {
         $this->bundleStorage = $bundleStorage;
+        $this->extraPaths = $extraPaths;
     }
 
     /**
@@ -66,6 +70,9 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
         string $tempDir
     ): Configuration {
         $paths = [];
+        foreach ($this->extraPaths as $extraPath) {
+            $paths[$extraPath['dir']] = $extraPath['prefix'];
+        }
         /**
          * @var ExtensionInterface $bundle
          */
