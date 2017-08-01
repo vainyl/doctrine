@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ManagerRegistry as DoctrineRegistryInterface;
+use Doctrine\Common\Persistence\ObjectManager as DoctrineManagerInterface;
 use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\Common\Persistence\ObjectRepository as DoctrineRepositoryInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -39,7 +39,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
 {
     private $hydratorRegistry;
 
-    private $doctrineRegistry;
+    private $doctrineManager;
 
     private $databasePlatform;
 
@@ -49,18 +49,18 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
      * DoctrineEntityHydrator constructor.
      *
      * @param HydratorRegistryInterface $hydratorRegistry
-     * @param DoctrineRegistryInterface $doctrineRegistry
+     * @param DoctrineManagerInterface  $doctrineManager
      * @param AbstractPlatform          $databasePlatform
      * @param ClassMetadataFactory      $metadataFactory
      */
     public function __construct(
         HydratorRegistryInterface $hydratorRegistry,
-        DoctrineRegistryInterface $doctrineRegistry,
+        DoctrineManagerInterface $doctrineManager,
         AbstractPlatform $databasePlatform,
         ClassMetadataFactory $metadataFactory
     ) {
         $this->hydratorRegistry = $hydratorRegistry;
-        $this->doctrineRegistry = $doctrineRegistry;
+        $this->doctrineManager = $doctrineManager;
         $this->databasePlatform = $databasePlatform;
         $this->metadataFactory = $metadataFactory;
     }
@@ -199,7 +199,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
      */
     public function getRepository(string $className): DoctrineRepositoryInterface
     {
-        return $this->doctrineRegistry->getRepository($className, 'entity');
+        return $this->doctrineManager->getRepository($className);
     }
 
     /**
