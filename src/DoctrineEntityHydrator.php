@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Persistence\ObjectManager as DoctrineManagerInterface;
 use Doctrine\Common\Persistence\Mapping\MappingException;
-use Doctrine\Common\Persistence\ObjectRepository as DoctrineRepositoryInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -28,6 +26,7 @@ use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
 use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
 use Vainyl\Doctrine\ORM\Exception\UnknownReferenceEntityException;
 use Vainyl\Domain\Hydrator\DomainHydratorInterface;
+use Vainyl\Domain\Storage\DomainStorageInterface;
 use Vainyl\Entity\EntityInterface;
 
 /**
@@ -39,7 +38,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
 {
     private $hydratorRegistry;
 
-    private $doctrineManager;
+    private $domainStorage;
 
     private $databasePlatform;
 
@@ -49,18 +48,18 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
      * DoctrineEntityHydrator constructor.
      *
      * @param HydratorRegistryInterface $hydratorRegistry
-     * @param DoctrineManagerInterface  $doctrineManager
+     * @param DomainStorageInterface    $domainStorage
      * @param AbstractPlatform          $databasePlatform
      * @param ClassMetadataFactory      $metadataFactory
      */
     public function __construct(
         HydratorRegistryInterface $hydratorRegistry,
-        DoctrineManagerInterface $doctrineManager,
+        DomainStorageInterface $domainStorage,
         AbstractPlatform $databasePlatform,
         ClassMetadataFactory $metadataFactory
     ) {
         $this->hydratorRegistry = $hydratorRegistry;
-        $this->doctrineManager = $doctrineManager;
+        $this->domainStorage = $domainStorage;
         $this->databasePlatform = $databasePlatform;
         $this->metadataFactory = $metadataFactory;
     }
@@ -96,16 +95,15 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
                     switch ($associationMapping['type']) {
                         case ClassMetadata::ONE_TO_ONE:
                         case ClassMetadata::MANY_TO_ONE:
-                            if (null === ($processedValue = $this->getRepository($referenceEntity)->find($value))) {
+                            if (null === ($processedValue = $this->domainStorage->findOne($referenceEntity, $value))) {
                                 throw new UnknownReferenceEntityException($this, $referenceEntity, $value);
                             }
                             break;
                         case ClassMetadata::ONE_TO_MANY:
                         case ClassMetadata::MANY_TO_MANY:
                             $processedValue = new ArrayCollection();
-                            $repository = $this->getRepository($referenceEntity);
                             foreach ($value as $referenceData) {
-                                $processedValue->add($repository->find($referenceData));
+                                $processedValue->add($this->domainStorage->findOne($referenceEntity, $referenceData));
                             }
                             break;
                     }
@@ -190,16 +188,6 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
     public function getHydrator(string $className): HydratorInterface
     {
         return $this->hydratorRegistry->getHydrator($className);
-    }
-
-    /**
-     * @param string $className
-     *
-     * @return DoctrineRepositoryInterface
-     */
-    public function getRepository(string $className): DoctrineRepositoryInterface
-    {
-        return $this->doctrineManager->getRepository($className);
     }
 
     /**
