@@ -4,7 +4,7 @@
  *
  * PHP Version 7
  *
- * @package   Doctrine-orm-bridge
+ * @package   Doctrine-ORM-Bridge
  * @license   https://opensource.org/licenses/MIT MIT License
  * @link      https://vainyl.com
  */
