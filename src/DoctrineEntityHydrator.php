@@ -22,9 +22,12 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Vainyl\Core\ArrayInterface;
 use Vainyl\Core\Hydrator\AbstractHydrator;
+use Vainyl\Core\Hydrator\HydratorInterface;
+use Vainyl\Core\Hydrator\Registry\HydratorRegistryInterface;
 use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
 use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
 use Vainyl\Doctrine\ORM\Exception\UnknownReferenceEntityException;
+use Vainyl\Domain\Hydrator\DomainHydratorInterface;
 use Vainyl\Entity\EntityInterface;
 
 /**
@@ -32,8 +35,10 @@ use Vainyl\Entity\EntityInterface;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntityHydrator extends AbstractHydrator
+class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorInterface
 {
+    private $hydratorRegistry;
+
     private $doctrineRegistry;
 
     private $databasePlatform;
@@ -43,74 +48,21 @@ class DoctrineEntityHydrator extends AbstractHydrator
     /**
      * DoctrineEntityHydrator constructor.
      *
+     * @param HydratorRegistryInterface $hydratorRegistry
      * @param DoctrineRegistryInterface $doctrineRegistry
      * @param AbstractPlatform          $databasePlatform
      * @param ClassMetadataFactory      $metadataFactory
      */
     public function __construct(
+        HydratorRegistryInterface $hydratorRegistry,
         DoctrineRegistryInterface $doctrineRegistry,
         AbstractPlatform $databasePlatform,
         ClassMetadataFactory $metadataFactory
     ) {
+        $this->hydratorRegistry = $hydratorRegistry;
         $this->doctrineRegistry = $doctrineRegistry;
         $this->databasePlatform = $databasePlatform;
         $this->metadataFactory = $metadataFactory;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function supports(string $name): bool
-    {
-        try {
-            $this->metadataFactory->getMetadataFor($name);
-        } catch (MappingException $e) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $className
-     *
-     * @return DoctrineRepositoryInterface
-     */
-    public function getRepository(string $className): DoctrineRepositoryInterface
-    {
-        return $this->doctrineRegistry->getRepository($className, 'entity');
-    }
-
-    /**
-     * @param array         $entityData
-     * @param ClassMetadata $classMetadata
-     *
-     * @return string
-     */
-    public function getEntityName(array $entityData, ClassMetadata $classMetadata): string
-    {
-        if (ClassMetadata::INHERITANCE_TYPE_NONE === $classMetadata->inheritanceType) {
-            return $classMetadata->name;
-        }
-
-        if (false === array_key_exists($classMetadata->discriminatorColumn['name'], $entityData)) {
-            throw new MissingDiscriminatorColumnException(
-                $this,
-                $classMetadata->discriminatorColumn['name'],
-                $entityData
-            );
-        }
-
-        $discriminatorColumnValue = $entityData[$classMetadata->discriminatorColumn['name']];
-        if (false === array_key_exists($discriminatorColumnValue, $classMetadata->discriminatorMap)) {
-            throw new UnknownDiscriminatorValueException(
-                $this,
-                $discriminatorColumnValue,
-                $classMetadata->discriminatorMap
-            );
-        }
-
-        return $classMetadata->discriminatorMap[$discriminatorColumnValue];
     }
 
     /**
@@ -196,5 +148,71 @@ class DoctrineEntityHydrator extends AbstractHydrator
         }
 
         return $entity;
+    }
+
+    /**
+     * @param array         $entityData
+     * @param ClassMetadata $classMetadata
+     *
+     * @return string
+     */
+    public function getEntityName(array $entityData, ClassMetadata $classMetadata): string
+    {
+        if (ClassMetadata::INHERITANCE_TYPE_NONE === $classMetadata->inheritanceType) {
+            return $classMetadata->name;
+        }
+
+        if (false === array_key_exists($classMetadata->discriminatorColumn['name'], $entityData)) {
+            throw new MissingDiscriminatorColumnException(
+                $this,
+                $classMetadata->discriminatorColumn['name'],
+                $entityData
+            );
+        }
+
+        $discriminatorColumnValue = $entityData[$classMetadata->discriminatorColumn['name']];
+        if (false === array_key_exists($discriminatorColumnValue, $classMetadata->discriminatorMap)) {
+            throw new UnknownDiscriminatorValueException(
+                $this,
+                $discriminatorColumnValue,
+                $classMetadata->discriminatorMap
+            );
+        }
+
+        return $classMetadata->discriminatorMap[$discriminatorColumnValue];
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return HydratorInterface
+     */
+    public function getHydrator(string $className): HydratorInterface
+    {
+        return $this->hydratorRegistry->getHydrator($className);
+    }
+
+    /**
+     * @param string $className
+     *
+     * @return DoctrineRepositoryInterface
+     */
+    public function getRepository(string $className): DoctrineRepositoryInterface
+    {
+        return $this->doctrineRegistry->getRepository($className, 'entity');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function supports(string $name): bool
+    {
+        try {
+            $this->metadataFactory->getMetadataFor($name);
+        } catch (MappingException $e) {
+            return false;
+        }
+
+        return true;
     }
 }
