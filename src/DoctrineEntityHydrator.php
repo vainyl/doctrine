@@ -108,6 +108,8 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
                             break;
                     }
                     break;
+                default:
+                    break;
             }
             if (null !== $reflectionField) {
                 $reflectionField->setValue($entity, $processedValue);
@@ -138,6 +140,8 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
                         $value,
                         $this->databasePlatform
                     );
+                    break;
+                default:
                     break;
             }
             if (null !== $reflectionField) {
