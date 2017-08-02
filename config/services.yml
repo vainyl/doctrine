@@ -43,7 +43,11 @@ services:
     decorates: collection.factory.sequence
     decoration_priority: 600
     class: Vainyl\Doctrine\ORM\Operation\Decorator\DoctrineCollectionFactoryDecorator
-    arguments: ['@collection.factory.sequence.entity.inner', '@doctrine.entity.manager']
+  collection.factory.set.entity:
+    decorates: collection.factory.set
+    decoration_priority: 600
+    class: Vainyl\Doctrine\ORM\Operation\Decorator\DoctrineCollectionFactoryDecorator
+    arguments: ['@collection.factory.set.entity.inner', '@doctrine.entity.manager']
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@collection.factory.sequence', '@doctrine.entity.manager']
