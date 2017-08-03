@@ -20,8 +20,7 @@ services:
       - '@doctrine.event.manager'
       - '@time.factory'
     tags:
-      - {name: 'domain.storage', alias: 'doctrine.orm'}
-      - {name: 'doctrine.manager', alias: 'entity'}
+      - {name: doctrine.manager, alias: entity}
   doctrine.entity.manager.factory:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityManagerFactory
   doctrine.connection.factory.orm:
@@ -51,23 +50,19 @@ services:
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@collection.factory.sequence', '@doctrine.entity.manager']
-    tags:
-      - {name: 'domain.operation.factory', alias: 'doctrine.orm'}
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@collection.factory.sequence', '@doctrine.entity.manager']
-    tags:
-      - {name: 'domain.operation.factory', alias: 'doctrine.orm'}
   app.bootstrapper.doctrine.orm.type:
     class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineTypeBootstrapper
     arguments: ['@database.doctrine.orm', '@time.factory']
     tags:
-      - {name: 'bootstrapper'}
+      - {name: bootstrapper}
   app.bootstrapper.doctrine.orm.proxy:
     class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineProxyBootstrapper
     arguments: ['@app.environment']
     tags:
-      - {name: 'bootstrapper'}
+      - {name: bootstrapper}
   entity.hydrator.doctrine:
     class: Vainyl\Doctrine\ORM\DoctrineEntityHydrator
     arguments:
@@ -75,6 +70,3 @@ services:
       - '@domain.storage'
       - '@doctrine.entity.database.platform'
       - '@doctrine.entity.metadata.factory'
-    tags:
-      - {name: hydrator, alias: doctrine.orm}
-      - {name: domain.hydrator, alias: doctrine.orm}
