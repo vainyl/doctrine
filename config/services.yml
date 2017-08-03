@@ -50,9 +50,8 @@ services:
   entity.operation.factory.doctrine:
     class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
     arguments: ['@collection.factory.sequence', '@doctrine.entity.manager']
-  entity.operation.factory.doctrine:
-    class: Vainyl\Doctrine\ORM\Operation\Factory\DoctrineEntityOperationFactory
-    arguments: ['@collection.factory.sequence', '@doctrine.entity.manager']
+    tags:
+      - {name: entity.operation.factory, alias: doctrine.orm}
   app.bootstrapper.doctrine.orm.type:
     class: Vainyl\Doctrine\ORM\Bootstrapper\DoctrineTypeBootstrapper
     arguments: ['@database.doctrine.orm', '@time.factory']
@@ -70,3 +69,5 @@ services:
       - '@domain.storage'
       - '@doctrine.entity.database.platform'
       - '@doctrine.entity.metadata.factory'
+    tags:
+      - {name: entity.hydrator, alias: doctrine.orm}
