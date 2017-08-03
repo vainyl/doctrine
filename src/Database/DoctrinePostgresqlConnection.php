@@ -43,6 +43,24 @@ class DoctrinePostgresqlConnection extends AbstractPostgreSQLDriver implements C
     }
 
     /**
+     * @param DoctrinePostgresqlConnection $obj
+     *
+     * @return bool
+     */
+    public function equals($obj): bool
+    {
+        return $this->getId() === $obj->getId();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function establish()
+    {
+        return $this->connection->establish();
+    }
+
+    /**
      * @inheritDoc
      */
     public function getId(): string
@@ -53,7 +71,7 @@ class DoctrinePostgresqlConnection extends AbstractPostgreSQLDriver implements C
     /**
      * @inheritDoc
      */
-    public function getName() : string
+    public function getName(): string
     {
         return 'pdo_pgsql';
     }
@@ -61,8 +79,8 @@ class DoctrinePostgresqlConnection extends AbstractPostgreSQLDriver implements C
     /**
      * @inheritDoc
      */
-    public function establish()
+    public function hash()
     {
-        return $this->connection->establish();
+        return $this->getId();
     }
 }

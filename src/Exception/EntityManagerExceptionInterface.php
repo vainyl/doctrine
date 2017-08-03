@@ -25,5 +25,5 @@ interface EntityManagerExceptionInterface extends ArrayInterface, \Throwable
     /**
      * @return EntityManagerInterface
      */
-    public function getEntityManager() : EntityManagerInterface;
+    public function getEntityManager(): EntityManagerInterface;
 }

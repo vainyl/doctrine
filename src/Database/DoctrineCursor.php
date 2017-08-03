@@ -41,7 +41,7 @@ class DoctrineCursor implements CursorInterface
     /**
      * @inheritDoc
      */
-    public function valid() : bool
+    public function valid(): bool
     {
         return ($this->doctrineStatement->errorCode() === '00000');
     }
@@ -49,7 +49,7 @@ class DoctrineCursor implements CursorInterface
     /**
      * @inheritDoc
      */
-    public function current() : array
+    public function current(): array
     {
         return $this->doctrineStatement->fetch($this->mode);
     }
@@ -57,7 +57,7 @@ class DoctrineCursor implements CursorInterface
     /**
      * @inheritDoc
      */
-    public function next() : bool
+    public function next(): bool
     {
         $this->doctrineStatement->nextRowset();
 
@@ -67,7 +67,7 @@ class DoctrineCursor implements CursorInterface
     /**
      * @inheritDoc
      */
-    public function close() : CursorInterface
+    public function close(): CursorInterface
     {
         $this->doctrineStatement->closeCursor();
 
@@ -77,7 +77,7 @@ class DoctrineCursor implements CursorInterface
     /**
      * @inheritDoc
      */
-    public function mode(int $mode) : CursorInterface
+    public function mode(int $mode): CursorInterface
     {
         $this->mode = $mode;
 
@@ -87,7 +87,7 @@ class DoctrineCursor implements CursorInterface
     /**
      * @inheritDoc
      */
-    public function getSingle() : array
+    public function getSingle(): array
     {
         return $this->doctrineStatement->fetch($this->mode);
     }
@@ -95,7 +95,7 @@ class DoctrineCursor implements CursorInterface
     /**
      * @inheritDoc
      */
-    public function getAll() : array
+    public function getAll(): array
     {
         return $this->doctrineStatement->fetchAll($this->mode);
     }
@@ -103,7 +103,7 @@ class DoctrineCursor implements CursorInterface
     /**
      * @inheritDoc
      */
-    public function count() : int
+    public function count(): int
     {
         return $this->doctrineStatement->rowCount();
     }

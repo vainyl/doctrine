@@ -36,7 +36,7 @@ class DoctrineEntityMetadata extends ClassMetadata
      *
      * @return DoctrineEntityMetadata
      */
-    public function setAlias(string $alias) : DoctrineEntityMetadata
+    public function setAlias(string $alias): DoctrineEntityMetadata
     {
         $this->alias = $alias;
 

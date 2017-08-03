@@ -25,7 +25,6 @@ use Vainyl\Time\Factory\TimeFactoryInterface;
  */
 class DoctrineEntityManagerFactory
 {
-
     /**
      * @param DBALDriverConnection     $connection
      * @param DoctrineORMConfiguration $configuration
@@ -39,8 +38,7 @@ class DoctrineEntityManagerFactory
         DoctrineORMConfiguration $configuration,
         DoctrineEventManager $eventManager,
         TimeFactoryInterface $timeFactory
-    ) : DoctrineEntityManager
-    {
+    ): DoctrineEntityManager {
         return DoctrineEntityManager::createWithTimeFactory(
             $connection,
             $configuration,

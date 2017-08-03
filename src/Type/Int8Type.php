@@ -8,7 +8,7 @@
  * @license   https://opensource.org/licenses/MIT MIT License
  * @link      https://github.com/allflame/vain-doctrine
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM\Type;
 
@@ -56,10 +56,10 @@ class Int8Type extends Type
         }
 
         if (PHP_INT_MAX < $value) {
-            return (string) $value;
+            return (string)$value;
         }
 
-        return (int) $value;
+        return (int)$value;
     }
 
     /**

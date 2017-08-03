@@ -30,7 +30,7 @@ class UnknownDoctrineConfigTypeException extends AbstractCoreException
      * UnknownDoctrineDriverTypeException constructor.
      *
      * @param DoctrineORMConfigurationFactory $configurationFactory
-     * @param string                       $driver
+     * @param string                          $driver
      */
     public function __construct(DoctrineORMConfigurationFactory $configurationFactory, string $driver)
     {

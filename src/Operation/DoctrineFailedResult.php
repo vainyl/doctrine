@@ -40,9 +40,9 @@ class DoctrineFailedResult extends AbstractFailedResult
     {
         return array_merge(
             [
-                'code' => $this->exception->getCode(),
+                'code'    => $this->exception->getCode(),
                 'message' => $this->exception->getMessage(),
-                'trace' => $this->exception->getTrace(),
+                'trace'   => $this->exception->getTrace(),
             ],
             parent::toArray()
         );

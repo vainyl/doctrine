@@ -43,6 +43,24 @@ class DoctrineMysqlConnection extends AbstractMySQLDriver implements ConnectionI
     }
 
     /**
+     * @param DoctrineMysqlConnection $obj
+     *
+     * @return bool
+     */
+    public function equals($obj): bool
+    {
+        return $this->getId() === $obj->getId();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function establish()
+    {
+        return $this->connection->establish();
+    }
+
+    /**
      * @inheritDoc
      */
     public function getId(): string
@@ -53,7 +71,7 @@ class DoctrineMysqlConnection extends AbstractMySQLDriver implements ConnectionI
     /**
      * @inheritDoc
      */
-    public function getName() : string
+    public function getName(): string
     {
         return 'pdo_mysql';
     }
@@ -61,8 +79,8 @@ class DoctrineMysqlConnection extends AbstractMySQLDriver implements ConnectionI
     /**
      * @inheritDoc
      */
-    public function establish()
+    public function hash()
     {
-        return $this->connection->establish();
+        return $this->getId();
     }
 }
