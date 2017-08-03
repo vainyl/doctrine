@@ -98,6 +98,16 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
     }
 
     /**
+     * @param DoctrineEntityManager $obj
+     *
+     * @return bool
+     */
+    public function equals($obj): bool
+    {
+        return $this->getId() === $obj->getId();
+    }
+
+    /**
      * @inheritDoc
      */
     public function findById(string $name, $id): ?DomainInterface
@@ -160,6 +170,14 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
     public function getTimeFactory()
     {
         return $this->timeFactory;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hash()
+    {
+        return $this->getId();
     }
 
     /**

@@ -51,6 +51,26 @@ class DoctrineORMDatabase extends Connection implements MvccDatabaseInterface
     /**
      * @inheritDoc
      */
+    public function commitTransaction(): bool
+    {
+        $this->commit();
+
+        return true;
+    }
+
+    /**
+     * @param DoctrineORMDatabase $obj
+     *
+     * @return bool
+     */
+    public function equals($obj): bool
+    {
+        return $this->getId() === $obj->getId();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getId(): string
     {
         return spl_object_hash($this);
@@ -67,21 +87,9 @@ class DoctrineORMDatabase extends Connection implements MvccDatabaseInterface
     /**
      * @inheritDoc
      */
-    public function startTransaction(): bool
+    public function hash()
     {
-        $this->beginTransaction();
-
-        return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function commitTransaction(): bool
-    {
-        $this->commit();
-
-        return true;
+        return $this->getId();
     }
 
     /**
@@ -100,5 +108,15 @@ class DoctrineORMDatabase extends Connection implements MvccDatabaseInterface
     public function runQuery($query, array $bindParams = [], array $bindTypeParams = []): CursorInterface
     {
         return new DoctrineCursor($this->query($query, $bindParams));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function startTransaction(): bool
+    {
+        $this->beginTransaction();
+
+        return true;
     }
 }
