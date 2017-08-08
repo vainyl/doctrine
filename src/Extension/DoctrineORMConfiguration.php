@@ -32,7 +32,6 @@ class DoctrineORMConfiguration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('config')->defaultValue('yaml')->end()
                 ->scalarNode('file')->defaultValue('entitymap')->end()
                 ->scalarNode('extension')->defaultValue('.orm.yml')->end()
                 ->scalarNode('tmp_dir')->defaultValue('doctrine')->end()

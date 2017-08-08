@@ -41,11 +41,10 @@ class DoctrineORMExtension extends AbstractFrameworkExtension
 
         $container
             ->findDefinition('doctrine.settings.entity')
-            ->replaceArgument(1, $ormConfig['config'])
-            ->replaceArgument(2, $ormConfig['file'])
-            ->replaceArgument(3, $ormConfig['extension'])
-            ->replaceArgument(4, $ormConfig['tmp_dir'])
-            ->replaceArgument(5, $ormConfig['proxy']);
+            ->replaceArgument(1, $ormConfig['file'])
+            ->replaceArgument(2, $ormConfig['extension'])
+            ->replaceArgument(3, $ormConfig['tmp_dir'])
+            ->replaceArgument(4, $ormConfig['proxy']);
 
         foreach ($ormConfig['decorators'] as $decorator) {
             $decoratorId = 'doctrine.mapping.driver.' . $decorator;
