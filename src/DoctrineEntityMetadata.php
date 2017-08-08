@@ -37,6 +37,14 @@ class DoctrineEntityMetadata extends ClassMetadata implements DoctrineDomainMeta
     /**
      * @inheritDoc
      */
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function setAlias(string $alias): DoctrineDomainMetadataInterface
     {
         $this->alias = $alias;
@@ -47,26 +55,18 @@ class DoctrineEntityMetadata extends ClassMetadata implements DoctrineDomainMeta
     /**
      * @inheritDoc
      */
-    public function setScenarios(array $scenarios) : DoctrineDomainMetadataInterface
+    public function getScenarios(): array
+    {
+        return $this->scenarios;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setScenarios(array $scenarios): DoctrineDomainMetadataInterface
     {
         $this->scenarios = $scenarios;
 
         return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getAlias() : string
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getScenarios() : array
-    {
-        return $this->scenarios;
     }
 }
