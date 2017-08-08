@@ -24,12 +24,14 @@ class DoctrineEntityMetadata extends ClassMetadata implements DoctrineDomainMeta
 {
     public $alias;
 
+    public $scenarios;
+
     /**
      * @inheritDoc
      */
     public function __sleep()
     {
-        return array_merge(parent::__sleep(), ['alias']);
+        return array_merge(parent::__sleep(), ['alias', 'scenarios']);
     }
 
     /**
@@ -38,6 +40,16 @@ class DoctrineEntityMetadata extends ClassMetadata implements DoctrineDomainMeta
     public function setAlias(string $alias): DoctrineDomainMetadataInterface
     {
         $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setScenarios(array $scenarios) : DoctrineDomainMetadataInterface
+    {
+        $this->scenarios = $scenarios;
 
         return $this;
     }
