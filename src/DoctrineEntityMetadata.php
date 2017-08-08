@@ -53,4 +53,20 @@ class DoctrineEntityMetadata extends ClassMetadata implements DoctrineDomainMeta
 
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAlias() : string
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getScenarios() : array
+    {
+        return $this->scenarios;
+    }
 }
