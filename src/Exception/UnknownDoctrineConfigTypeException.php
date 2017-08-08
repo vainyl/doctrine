@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Exception;
 
 use Vainyl\Core\Exception\AbstractCoreException;
-use Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory;
+use Vainyl\Doctrine\ORM\Factory\DoctrineEntityMappingDriverFactory;
 
 /**
  * Class UnknownDoctrineConfigTypeException
@@ -22,21 +22,21 @@ use Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory;
  */
 class UnknownDoctrineConfigTypeException extends AbstractCoreException
 {
-    private $configurationFactory;
+    private $driverFactory;
 
     private $driver;
 
     /**
      * UnknownDoctrineDriverTypeException constructor.
      *
-     * @param DoctrineORMConfigurationFactory $configurationFactory
-     * @param string                          $driver
+     * @param DoctrineEntityMappingDriverFactory $driverFactory
+     * @param string                      $driver
      */
-    public function __construct(DoctrineORMConfigurationFactory $configurationFactory, string $driver)
+    public function __construct(DoctrineEntityMappingDriverFactory $driverFactory, string $driver)
     {
-        $this->configurationFactory = $configurationFactory;
+        $this->driverFactory = $driverFactory;
         $this->driver = $driver;
-        parent::__construct(sprintf('Cannot create doctrine config reader of unknown type %s', $driver));
+        parent::__construct(sprintf('Cannot create driver of unknown type %s', $driver));
     }
 
     /**
@@ -45,7 +45,7 @@ class UnknownDoctrineConfigTypeException extends AbstractCoreException
     public function toArray(): array
     {
         return array_merge(
-            ['configuration_factory' => $this->configurationFactory->getId(), 'driver' => $this->driver],
+            ['factory' => $this->driverFactory->getId(), 'driver' => $this->driver],
             parent::toArray()
         );
     }

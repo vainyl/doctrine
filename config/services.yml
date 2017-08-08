@@ -10,7 +10,14 @@ services:
       - '@doctrine.settings.entity'
   doctrine.configuration.factory.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory
-    arguments: ['@bundle.storage']
+  doctrine.mapping.driver.entity.factory:
+    class: Vainyl\Doctrine\ORM\Factory\DoctrineEntityMappingDriverFactory
+    arguments: ['@doctrine.mapping.path.provider']
+  doctrine.mapping.driver.entity:
+    class: Doctrine\Common\Persistence\Mapping\Driver\MappingDriver
+    factory: ['@doctrine.mapping.driver.entity.factory', 'create']
+    arguments:
+      - '@doctrine.settings.entity'
   doctrine.entity.manager:
     class: Vainyl\Doctrine\ORM\DoctrineEntityManager
     factory: ['@doctrine.entity.manager.factory', 'create']

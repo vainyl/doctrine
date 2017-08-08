@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Vainyl\Doctrine\ORM;
 
-use Vainyl\Core\AbstractArray;
-use Doctrine\Common\Cache\Cache as DoctrineCacheInterface;
 use Vainyl\Doctrine\Common\DoctrineSettings;
 
 /**
@@ -21,11 +19,9 @@ use Vainyl\Doctrine\Common\DoctrineSettings;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntitySettings extends AbstractArray
+class DoctrineEntitySettings extends DoctrineSettings
 {
     private $doctrineSettings;
-
-    private $driverName;
 
     private $globalFileName;
 
@@ -39,7 +35,6 @@ class DoctrineEntitySettings extends AbstractArray
      * DoctrineEntitySettings constructor.
      *
      * @param DoctrineSettings $doctrineSettings
-     * @param string           $driverName
      * @param string           $globalFileName
      * @param string           $fileExtension
      * @param string           $proxyNamespace
@@ -47,42 +42,21 @@ class DoctrineEntitySettings extends AbstractArray
      */
     public function __construct(
         DoctrineSettings $doctrineSettings,
-        string $driverName,
         string $globalFileName,
         string $fileExtension,
         string $proxyNamespace,
         string $tempDir
     ) {
         $this->doctrineSettings = $doctrineSettings;
-        $this->driverName = $driverName;
         $this->globalFileName = $globalFileName;
         $this->fileExtension = $fileExtension;
         $this->proxyNamespace = $proxyNamespace;
         $this->tempDir = $tempDir;
-    }
-
-    /**
-     * @return DoctrineCacheInterface
-     */
-    public function getCache(): DoctrineCacheInterface
-    {
-        return $this->doctrineSettings->getCache();
-    }
-
-    /**
-     * @return string
-     */
-    public function getDriverName(): string
-    {
-        return $this->driverName;
-    }
-
-    /**
-     * @return array
-     */
-    public function getExtraPaths(): array
-    {
-        return $this->doctrineSettings->getExtraPaths();
+        parent::__construct(
+            $doctrineSettings->getCache(),
+            $doctrineSettings->getDriverName(),
+            $doctrineSettings->getExtraPaths()
+        );
     }
 
     /**
