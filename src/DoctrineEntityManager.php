@@ -21,6 +21,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Vainyl\Doctrine\ORM\Exception\LevelIntegrityDoctrineException;
 use Vainyl\Domain\DomainInterface;
+use Vainyl\Domain\Scenario\ScenarioInterface;
+use Vainyl\Domain\Scenario\Storage\DomainScenarioStorageInterface;
 use Vainyl\Domain\Storage\DomainStorageInterface;
 use Vainyl\Time\Factory\TimeFactoryInterface;
 
@@ -29,7 +31,7 @@ use Vainyl\Time\Factory\TimeFactoryInterface;
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntityManager extends EntityManager implements DomainStorageInterface
+class DoctrineEntityManager extends EntityManager implements DomainStorageInterface, DomainScenarioStorageInterface
 {
     /**
      * @var TimeFactoryInterface
@@ -206,5 +208,13 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
         }
 
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getScenarios(string $name): array
+    {
+        return $this->getMetadataFactory()->getMetadataFor($name)->getScenarios();
     }
 }
