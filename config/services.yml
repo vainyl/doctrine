@@ -1,7 +1,7 @@
 services:
   doctrine.settings.entity:
     class: Vainyl\Doctrine\ORM\DoctrineEntitySettings
-    arguments: ['@doctrine.settings', 'yaml', 'entitymap', 'odm.yml', '/tmp', 'Proxy']
+    arguments: ['@doctrine.settings', 'entitymap', 'odm.yml', '/tmp', 'Proxy']
   doctrine.configuration.orm:
     class: Doctrine\ORM\Configuration
     factory: ['@doctrine.configuration.factory.orm', 'getConfiguration']
