@@ -21,8 +21,6 @@ use Vainyl\Doctrine\Common\DoctrineSettings;
  */
 class DoctrineEntitySettings extends DoctrineSettings
 {
-    private $doctrineSettings;
-
     private $globalFileName;
 
     private $fileExtension;
@@ -47,7 +45,6 @@ class DoctrineEntitySettings extends DoctrineSettings
         string $proxyNamespace,
         string $tempDir
     ) {
-        $this->doctrineSettings = $doctrineSettings;
         $this->globalFileName = $globalFileName;
         $this->fileExtension = $fileExtension;
         $this->proxyNamespace = $proxyNamespace;
