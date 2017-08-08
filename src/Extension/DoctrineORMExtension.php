@@ -29,7 +29,7 @@ class DoctrineORMExtension extends AbstractFrameworkExtension
      */
     public function getCompilerPasses(): array
     {
-        return [new DoctrineEntityMappingDriverPass()];
+        return [[new DoctrineEntityMappingDriverPass()]];
     }
 
     /**
