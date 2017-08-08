@@ -18,10 +18,10 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
-use Vainyl\Core\ArrayInterface;
 use Vainyl\Core\Hydrator\AbstractHydrator;
 use Vainyl\Core\Hydrator\HydratorInterface;
 use Vainyl\Core\Hydrator\Registry\HydratorRegistryInterface;
+use Vainyl\Core\IdentifiableInterface;
 use Vainyl\Doctrine\ORM\Exception\MissingDiscriminatorColumnException;
 use Vainyl\Doctrine\ORM\Exception\UnknownDiscriminatorValueException;
 use Vainyl\Doctrine\ORM\Exception\UnknownReferenceEntityException;
@@ -67,7 +67,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
     /**
      * @inheritDoc
      */
-    public function doCreate(string $name, array $entityData = []): ArrayInterface
+    public function doCreate(string $name, array $entityData = []): IdentifiableInterface
     {
         /**
          * @var ClassMetadata   $classMetadata
@@ -122,7 +122,7 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
     /**
      * @inheritDoc
      */
-    public function doUpdate($entity, array $entityData): ArrayInterface
+    public function doUpdate($entity, array $entityData): IdentifiableInterface
     {
         /**
          * @var ClassMetadata   $classMetadata
