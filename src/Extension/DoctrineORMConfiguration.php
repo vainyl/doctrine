@@ -37,7 +37,10 @@ class DoctrineORMConfiguration implements ConfigurationInterface
                 ->scalarNode('extension')->defaultValue('.orm.yml')->end()
                 ->scalarNode('tmp_dir')->defaultValue('doctrine')->end()
                 ->scalarNode('proxy')->defaultValue('Proxy')->end()
-                ->arrayNode('decorators')->defaultValue(['domain'])->end()
+                ->arrayNode('decorators')
+                    ->prototype('scalar')->end()
+                    ->defaultValue([])
+                ->end()
             ->end();
 
         return $treeBuilder;
