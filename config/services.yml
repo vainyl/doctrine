@@ -8,6 +8,7 @@ services:
     arguments:
       - '@app.environment'
       - '@doctrine.settings.entity'
+      - '@doctrine.mapping.driver.entity'
   doctrine.configuration.factory.orm:
     class: Vainyl\Doctrine\ORM\Factory\DoctrineORMConfigurationFactory
   doctrine.mapping.driver.entity.factory:
