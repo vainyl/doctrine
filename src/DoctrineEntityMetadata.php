@@ -13,13 +13,14 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Vainyl\Doctrine\Common\Metadata\DoctrineDomainMetadataInterface;
 
 /**
  * Class DoctrineEntityMetadata
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-class DoctrineEntityMetadata extends ClassMetadata
+class DoctrineEntityMetadata extends ClassMetadata implements DoctrineDomainMetadataInterface
 {
     public $alias;
 
@@ -32,11 +33,9 @@ class DoctrineEntityMetadata extends ClassMetadata
     }
 
     /**
-     * @param string $alias
-     *
-     * @return DoctrineEntityMetadata
+     * @inheritDoc
      */
-    public function setAlias(string $alias): DoctrineEntityMetadata
+    public function setAlias(string $alias): DoctrineDomainMetadataInterface
     {
         $this->alias = $alias;
 
