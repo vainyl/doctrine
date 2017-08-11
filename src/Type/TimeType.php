@@ -93,7 +93,7 @@ class TimeType extends Type
      */
     public function getName()
     {
-        return 'vain_time';
+        return 'v_time';
     }
 
     /**
