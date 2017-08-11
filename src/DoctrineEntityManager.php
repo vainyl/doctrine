@@ -131,7 +131,7 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
         int $limit = 0,
         int $offset = 0
     ): array {
-        return $this->getRepository($name)->findBy($criteria, $orderBy, $limit, $offset);
+        return $this->getRepository($name)->findBy($criteria, $orderBy, $limit ? $limit : null, $offset);
     }
 
     /**
