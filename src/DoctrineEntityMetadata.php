@@ -14,6 +14,7 @@ namespace Vainyl\Doctrine\ORM;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Vainyl\Doctrine\Common\Metadata\DoctrineDomainMetadataInterface;
+use Vainyl\Domain\Metadata\DomainMetadataInterface;
 
 /**
  * Class DoctrineEntityMetadata
@@ -22,51 +23,34 @@ use Vainyl\Doctrine\Common\Metadata\DoctrineDomainMetadataInterface;
  */
 class DoctrineEntityMetadata extends ClassMetadata implements DoctrineDomainMetadataInterface
 {
-    public $alias;
+    public $domainMetadata;
 
-    public $scenarios;
+    /**
+     * DoctrineEntityMetadata constructor.
+     *
+     * @param string                  $entityName
+     * @param DomainMetadataInterface $domainMetadata
+     * @param null                    $namingStrategy
+     */
+    public function __construct($entityName, DomainMetadataInterface $domainMetadata, $namingStrategy = null)
+    {
+        $this->domainMetadata = $domainMetadata;
+        parent::__construct($entityName, $namingStrategy);
+    }
 
     /**
      * @inheritDoc
      */
     public function __sleep()
     {
-        return array_merge(parent::__sleep(), ['alias', 'scenarios']);
+        return array_merge(parent::__sleep(), ['domainMetadata']);
     }
 
     /**
      * @inheritDoc
      */
-    public function getAlias(): string
+    public function getDomainMetadata(): DomainMetadataInterface
     {
-        return $this->alias;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setAlias(string $alias): DoctrineDomainMetadataInterface
-    {
-        $this->alias = $alias;
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getScenarios(): array
-    {
-        return $this->scenarios;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setScenarios(array $scenarios): DoctrineDomainMetadataInterface
-    {
-        $this->scenarios = $scenarios;
-
-        return $this;
+        return $this->domainMetadata;
     }
 }

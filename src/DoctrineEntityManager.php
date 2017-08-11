@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Vainyl\Doctrine\ORM\Exception\LevelIntegrityDoctrineException;
 use Vainyl\Domain\DomainInterface;
-use Vainyl\Domain\Scenario\ScenarioInterface;
+use Vainyl\Domain\Metadata\Factory\DomainMetadataFactoryInterface;
 use Vainyl\Domain\Scenario\Storage\DomainScenarioStorageInterface;
 use Vainyl\Domain\Storage\DomainStorageInterface;
 use Vainyl\Time\Factory\TimeFactoryInterface;
@@ -33,45 +33,49 @@ use Vainyl\Time\Factory\TimeFactoryInterface;
  */
 class DoctrineEntityManager extends EntityManager implements DomainStorageInterface, DomainScenarioStorageInterface
 {
-    /**
-     * @var TimeFactoryInterface
-     */
     private $timeFactory;
+
+    private $domainMetadataFactory;
 
     private $flushLevel = 0;
 
     /**
      * DoctrineEntityManager constructor.
      *
-     * @param Connection           $conn
-     * @param Configuration        $config
-     * @param EventManager         $eventManager
-     * @param TimeFactoryInterface $timeFactory
+     * @param Connection                     $conn
+     * @param Configuration                  $config
+     * @param EventManager                   $eventManager
+     * @param TimeFactoryInterface           $timeFactory
+     * @param DomainMetadataFactoryInterface $domainMetadataFactory
      */
     protected function __construct(
         Connection $conn,
         Configuration $config,
         EventManager $eventManager,
-        TimeFactoryInterface $timeFactory
+        TimeFactoryInterface $timeFactory,
+        DomainMetadataFactoryInterface $domainMetadataFactory
     ) {
         $this->timeFactory = $timeFactory;
+        $this->domainMetadataFactory = $domainMetadataFactory;
         parent::__construct($conn, $config, $eventManager);
     }
 
     /**
-     * @param                      $conn
-     * @param Configuration        $config
-     * @param EventManager         $eventManager
-     * @param TimeFactoryInterface $timeFactory
+     * @param mixed                          $conn
+     * @param Configuration                  $config
+     * @param EventManager                   $eventManager
+     * @param TimeFactoryInterface           $timeFactory
+     * @param DomainMetadataFactoryInterface $metadataFactory
      *
      * @return DoctrineEntityManager
      * @throws ORMException
      */
-    public static function createWithTimeFactory(
+    public static function createExtended(
         $conn,
         Configuration $config,
         EventManager $eventManager,
-        TimeFactoryInterface $timeFactory
+        TimeFactoryInterface $timeFactory,
+        DomainMetadataFactoryInterface $metadataFactory
     ) {
         if (!$config->getMetadataDriverImpl()) {
             throw ORMException::missingMappingDriverImpl();
@@ -96,7 +100,7 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
                 throw new \InvalidArgumentException("Invalid argument: " . $conn);
         }
 
-        return new DoctrineEntityManager($conn, $config, $conn->getEventManager(), $timeFactory);
+        return new DoctrineEntityManager($conn, $config, $conn->getEventManager(), $timeFactory, $metadataFactory);
     }
 
     /**
@@ -159,11 +163,27 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
     }
 
     /**
+     * @return DomainMetadataFactoryInterface
+     */
+    public function getDomainMetadataFactory(): DomainMetadataFactoryInterface
+    {
+        return $this->domainMetadataFactory;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getId(): ?string
     {
         return spl_object_hash($this);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getScenarios(string $name): array
+    {
+        return $this->getMetadataFactory()->getMetadataFor($name)->getDomainMetadata()->getScenarios();
     }
 
     /**
@@ -208,13 +228,5 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
         }
 
         return true;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getScenarios(string $name): array
-    {
-        return $this->getMetadataFactory()->getMetadataFor($name)->getScenarios();
     }
 }

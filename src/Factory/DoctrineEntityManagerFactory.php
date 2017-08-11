@@ -16,6 +16,7 @@ use Doctrine\Common\EventManager as DoctrineEventManager;
 use Doctrine\DBAL\Driver\Connection as DBALDriverConnection;
 use Doctrine\ORM\Configuration as DoctrineORMConfiguration;
 use Vainyl\Doctrine\ORM\DoctrineEntityManager;
+use Vainyl\Domain\Metadata\Factory\DomainMetadataFactoryInterface;
 use Vainyl\Time\Factory\TimeFactoryInterface;
 
 /**
@@ -26,10 +27,11 @@ use Vainyl\Time\Factory\TimeFactoryInterface;
 class DoctrineEntityManagerFactory
 {
     /**
-     * @param DBALDriverConnection     $connection
-     * @param DoctrineORMConfiguration $configuration
-     * @param DoctrineEventManager     $eventManager
-     * @param TimeFactoryInterface     $timeFactory
+     * @param DBALDriverConnection           $connection
+     * @param DoctrineORMConfiguration       $configuration
+     * @param DoctrineEventManager           $eventManager
+     * @param TimeFactoryInterface           $timeFactory
+     * @param DomainMetadataFactoryInterface $domainMetadataFactory
      *
      * @return DoctrineEntityManager
      */
@@ -37,13 +39,15 @@ class DoctrineEntityManagerFactory
         DBALDriverConnection $connection,
         DoctrineORMConfiguration $configuration,
         DoctrineEventManager $eventManager,
-        TimeFactoryInterface $timeFactory
+        TimeFactoryInterface $timeFactory,
+        DomainMetadataFactoryInterface $domainMetadataFactory
     ): DoctrineEntityManager {
-        return DoctrineEntityManager::createWithTimeFactory(
+        return DoctrineEntityManager::createExtended(
             $connection,
             $configuration,
             $eventManager,
-            $timeFactory
+            $timeFactory,
+            $domainMetadataFactory
         );
     }
 }

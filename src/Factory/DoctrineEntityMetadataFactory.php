@@ -34,7 +34,11 @@ class DoctrineEntityMetadataFactory extends ClassMetadataFactory
      */
     protected function newClassMetadataInstance($className)
     {
-        return new DoctrineEntityMetadata($className, $this->entityManager->getConfiguration()->getNamingStrategy());
+        return new DoctrineEntityMetadata(
+            $className,
+            $this->entityManager->getDomainMetadataFactory()->create(),
+            $this->entityManager->getConfiguration()->getNamingStrategy()
+        );
     }
 
     /**
@@ -42,8 +46,7 @@ class DoctrineEntityMetadataFactory extends ClassMetadataFactory
      */
     public function setEntityManager(EntityManagerInterface $em)
     {
+        parent::setEntityManager($em);
         $this->entityManager = $em;
-
-        return parent::setEntityManager($em);
     }
 }
