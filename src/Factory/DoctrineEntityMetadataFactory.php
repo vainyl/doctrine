@@ -21,6 +21,8 @@ use Vainyl\Doctrine\ORM\DoctrineEntityMetadata;
  * Class DoctrineEntityMetadataFactory
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
+ *
+ * @method DoctrineEntityMetadata getMetadataFor($name)
  */
 class DoctrineEntityMetadataFactory extends ClassMetadataFactory
 {

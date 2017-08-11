@@ -20,6 +20,7 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
 use Vainyl\Doctrine\ORM\Exception\LevelIntegrityDoctrineException;
+use Vainyl\Doctrine\ORM\Factory\DoctrineEntityMetadataFactory;
 use Vainyl\Domain\DomainInterface;
 use Vainyl\Domain\Metadata\Factory\DomainMetadataFactoryInterface;
 use Vainyl\Domain\Scenario\Storage\DomainScenarioStorageInterface;
@@ -30,6 +31,8 @@ use Vainyl\Time\Factory\TimeFactoryInterface;
  * Class DoctrineEntityManager
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
+ *
+ * @method DoctrineEntityMetadataFactory getMetadataFactory
  */
 class DoctrineEntityManager extends EntityManager implements DomainStorageInterface, DomainScenarioStorageInterface
 {
@@ -222,11 +225,9 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
     public function supports(string $name): bool
     {
         try {
-            $this->getMetadataFactory()->getMetadataFor($name);
+            return $this->getMetadataFactory()->getMetadataFor($name)->getDomainMetadata()->isPrimary();
         } catch (MappingException $e) {
             return false;
         }
-
-        return true;
     }
 }
