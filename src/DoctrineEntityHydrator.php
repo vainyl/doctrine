@@ -103,6 +103,9 @@ class DoctrineEntityHydrator extends AbstractHydrator implements DomainHydratorI
                         case ClassMetadata::MANY_TO_MANY:
                             $processedValue = new ArrayCollection();
                             foreach ($value as $referenceData) {
+                                if (null === $this->domainStorage->findOne($referenceEntity, $referenceData)) {
+                                    throw new UnknownReferenceEntityException($this, $referenceEntity, $referenceData);
+                                }
                                 $processedValue->add($this->domainStorage->findOne($referenceEntity, $referenceData));
                             }
                             break;
