@@ -42,7 +42,9 @@ class DoctrineFailedResult extends AbstractFailedResult
             [
                 'code'    => $this->exception->getCode(),
                 'message' => $this->exception->getMessage(),
-                'trace'   => $this->exception->getTrace(),
+                'file'    => $this->exception->getFile(),
+                'line'    => $this->exception->getLine(),
+                'trace'   => $this->exception->getTraceAsString(),
             ],
             parent::toArray()
         );
