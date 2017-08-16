@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace Vainyl\Doctrine\ORM\Exception;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Vainyl\Core\ArrayInterface;
+use Vainyl\Core\Exception\CoreExceptionInterface;
 
 /**
  * Interface EntityManagerExceptionInterface
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
  */
-interface EntityManagerExceptionInterface extends ArrayInterface, \Throwable
+interface EntityManagerExceptionInterface extends CoreExceptionInterface
 {
     /**
      * @return EntityManagerInterface
