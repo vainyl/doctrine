@@ -46,7 +46,7 @@ class DoctrineORMConfigurationFactory extends AbstractIdentifiable
             $settings->getCache()
         );
         $config->setProxyDir($environment->getCacheDirectory());
-        $config->setProxyNamespace($settings->getCache());
+        $config->setProxyNamespace($settings->getProxyNamespace());
         $config->setMetadataDriverImpl($mappingDriver);
         $config->setClassMetadataFactoryName(DoctrineEntityMetadataFactory::class);
 
