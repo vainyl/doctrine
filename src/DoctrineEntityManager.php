@@ -31,6 +31,7 @@ use Vainyl\Time\Factory\TimeFactoryInterface;
  * Class DoctrineEntityManager
  *
  * @author Taras P. Girnyk <taras.p.gyrnik@gmail.com>
+ * @author Andrii Dembitskiy <andrew.dembitskiy@gmail.com>
  *
  * @method DoctrineEntityMetadataFactory getMetadataFactory
  */
@@ -58,7 +59,7 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
         TimeFactoryInterface $timeFactory,
         DomainMetadataFactoryInterface $domainMetadataFactory
     ) {
-        $this->timeFactory = $timeFactory;
+        $this->timeFactory           = $timeFactory;
         $this->domainMetadataFactory = $domainMetadataFactory;
         parent::__construct($conn, $config, $eventManager);
     }
@@ -89,7 +90,8 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
                 $conn = DriverManager::getConnection(
                     $conn,
                     $config,
-                    ($eventManager ?: new EventManager())
+                    ($eventManager
+                        ?: new EventManager())
                 );
                 break;
 
@@ -134,11 +136,14 @@ class DoctrineEntityManager extends EntityManager implements DomainStorageInterf
         int $limit = 0,
         int $offset = 0
     ): array {
-        return $this->getRepository($name)->findBy($criteria, $orderBy, $limit
+        $offset = $offset
+            ? $offset
+            : null;
+        $limit  = $limit
             ? $limit
-            : null, $offset
-                                                       ? $offset
-                                                       : null);
+            : null;
+
+        return $this->getRepository($name)->findBy($criteria, $orderBy, $limit, $offset);
     }
 
     /**
