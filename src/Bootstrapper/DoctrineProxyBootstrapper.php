@@ -50,7 +50,11 @@ class DoctrineProxyBootstrapper extends AbstractIdentifiable implements Bootstra
      */
     public function process(ApplicationInterface $application): BootstrapperInterface
     {
-        Autoloader::register($this->environment->getCacheDirectory() . DIRECTORY_SEPARATOR . 'doctrine', 'Proxy');
+        // ToDo: configurable
+        Autoloader::register(
+            $this->environment->getCacheDirectory() . DIRECTORY_SEPARATOR . 'doctrine',
+            'DoctrineProxy'
+        );
 
         return $this;
     }
